@@ -2,12 +2,13 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>หน้าสั่งซื้อสินค้า</title>
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
       font-family: 'Sarabun', Tahoma, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     html, body {
@@ -30,7 +31,7 @@
       overflow: hidden;
     }
 
-    /* ================= แถบประวัติการสั่งสินค้า (แสดงเฉพาะตอน Log In แล้วในหน้าสั่งซื้อ) ================= */
+    /* ================= แถบประวัติการสั่งสินค้า ================= */
     .history-top-bar {
       border: 1.5px solid #102538;
       background-color: #ffbe00;
@@ -51,8 +52,8 @@
       background-color: #ffffff;
       color: #102538;
       font-weight: bold;
-      font-size: 12px;
-      padding: 3px 9px;
+      font-size: 13px;
+      padding: 5px 12px;
       cursor: pointer;
       white-space: nowrap;
       flex-shrink: 0;
@@ -78,7 +79,7 @@
       max-width: 420px;
       border: 2px solid #2c3e50;
       background-color: #ffffff;
-      padding: 24px 22px;
+      padding: 24px 20px;
       display: flex;
       flex-direction: column;
       gap: 14px;
@@ -88,14 +89,14 @@
       border: 1.5px solid #102538;
       background-color: #ffbe00;
       color: #102538;
-      padding: 8px 12px;
+      padding: 10px 12px;
       text-align: center;
-      font-size: 17px;
+      font-size: 18px;
       font-weight: bold;
     }
 
     .login-sub {
-      font-size: 13px;
+      font-size: 14px;
       color: #475467;
       text-align: center;
       line-height: 1.4;
@@ -103,18 +104,18 @@
 
     .login-input-wrap {
       border: 1.5px solid #2c3e50;
-      padding: 6px 10px;
+      padding: 8px 10px;
       display: flex;
       align-items: center;
       background-color: #ffffff;
-      min-height: 40px;
+      min-height: 44px;
     }
 
     .login-input-wrap label {
       font-weight: bold;
       white-space: nowrap;
       margin-right: 8px;
-      font-size: 14px;
+      font-size: 15px;
       color: #000000;
     }
 
@@ -122,7 +123,7 @@
       border: none;
       outline: none;
       width: 100%;
-      font-size: 15px;
+      font-size: 16px;
       background: transparent;
       color: #000000;
     }
@@ -131,11 +132,11 @@
       background-color: #00a650;
       color: #ffffff;
       border: 1.5px solid #2c3e50;
-      padding: 9px 14px;
-      font-size: 15px;
+      padding: 10px 14px;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      min-height: 40px;
+      min-height: 44px;
     }
 
     .login-btn:hover:not(:disabled) {
@@ -151,10 +152,11 @@
       background-color: #ffffff;
       color: #102538;
       border: 1.5px solid #2c3e50;
-      padding: 6px 10px;
-      font-size: 12.5px;
+      padding: 8px 10px;
+      font-size: 14px;
       font-weight: bold;
       cursor: pointer;
+      min-height: 40px;
     }
 
     .login-secondary-btn:hover:not(:disabled) {
@@ -173,20 +175,21 @@
       color: #475467;
     }
 
+    /* ปุ่ม Log Out ไม่มีขอบ */
     .logout-btn {
-      border: 1.5px solid #2c3e50;
-  background-color: #d92d20;
-  color: #ffffff;
-  font-weight: bold;
-  font-size: 12px;
-  padding: 4px 8px;
-  cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
+      border: none;
+      background-color: #d92d20;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 12px;
+      padding: 6px 12px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .logout-btn:hover {
-      background-color: #f4f6f8;
+      background-color: #b42318;
     }
 
     .top-bar {
@@ -228,7 +231,7 @@
 
     .inline-validation-note {
       margin-top: 6px;
-      font-size: 12.5px;
+      font-size: 13px;
       font-weight: bold;
       color: #d92d20;
       display: none;
@@ -252,7 +255,7 @@
       display: flex;
       align-items: center;
       background-color: #ffffff;
-      min-height: 36px;
+      min-height: 38px;
     }
 
     .field-box.missing-required {
@@ -300,7 +303,7 @@
       width: auto !important;
       min-width: 135px;
       max-width: 205px;
-      height: 28px;
+      height: 30px;
       padding: 0 8px;
       background-color: #ffbe00 !important;
       border: 1.5px solid #102538 !important;
@@ -327,14 +330,14 @@
     }
 
     .cat-refresh-icon-btn {
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       padding: 0;
       background-color: #ffbe00;
       border: 1.5px solid #102538;
       color: #102538;
       font-weight: bold;
-      font-size: 14px;
+      font-size: 15px;
       line-height: 1;
       cursor: pointer;
       display: inline-flex;
@@ -357,6 +360,7 @@
       cursor: pointer;
       justify-content: center;
       border: 1.5px solid #2c3e50;
+      min-height: 38px;
     }
 
     .confirm-box-green:hover {
@@ -385,24 +389,24 @@
     .product-grid {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 5px;
+      gap: 6px;
       background-color: #ffffff;
     }
 
     .product-card {
       border: 1.5px solid #2c3e50;
-      padding: 4px;
+      padding: 5px;
       background-color: #ffffff;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 4px;
+      gap: 5px;
       min-height: 292px;
     }
 
     .card-img-box {
       border: 1.5px solid #2c3e50;
-      height: 172px;
+      height: 170px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -425,9 +429,9 @@
       background: #ffffff;
       color: #d92d20;
       border: 1px solid #d92d20;
-      font-size: 9.5px;
+      font-size: 10px;
       font-weight: bold;
-      padding: 1px 4px;
+      padding: 1px 5px;
       z-index: 2;
     }
 
@@ -436,12 +440,12 @@
       align-items: center;
       justify-content: space-between;
       gap: 2px;
-      min-height: 16px;
+      min-height: 18px;
       background-color: #ffffff;
     }
 
     .code-barcode-text {
-      font-size: 8px;
+      font-size: 9px;
       font-weight: 600;
       color: #333;
       white-space: nowrap;
@@ -459,9 +463,9 @@
 
     .unit-badge {
       border: 1.5px solid #2c3e50;
-      padding: 0.5px 4px;
+      padding: 1px 5px;
       text-align: center;
-      font-size: 8px;
+      font-size: 9px;
       font-weight: bold;
       white-space: nowrap;
       flex-shrink: 0;
@@ -471,38 +475,39 @@
 
     .card-name-box {
       border: 1.5px solid #2c3e50;
-      padding: 3px 3px;
+      padding: 4px;
       text-align: center;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: bold;
       min-height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
-      line-height: 1.2;
+      line-height: 1.25;
       background-color: #ffffff;
       color: #000000;
     }
 
     .card-action-row {
       display: grid;
-      grid-template-columns: 15px 28px 15px 28px 1fr;
+      grid-template-columns: 20px 32px 20px 36px 1fr;
       gap: 2px;
       align-items: stretch;
-      min-height: 24px;
+      min-height: 28px;
       background-color: #ffffff;
     }
 
     .qty-btn {
       border: 1.5px solid #2c3e50;
       background: #ffffff;
-      font-size: 12px;
+      font-size: 14px;
       font-weight: bold;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 0;
+      touch-action: manipulation;
     }
 
     .qty-btn:hover {
@@ -513,7 +518,7 @@
       border: 1.5px solid #2c3e50;
       width: 100%;
       text-align: center;
-      font-size: 10px;
+      font-size: 12px;
       font-weight: bold;
       outline: none;
       padding: 0 2px;
@@ -528,13 +533,14 @@
     }
 
     .card-confirm-btn {
-      border: 1.5px solid #2c3e50;
+      border: none;
       background-color: #00a650;
       color: #ffffff;
-      font-size: 8.5px;
+      font-size: 10px;
       font-weight: bold;
       cursor: pointer;
       padding: 0;
+      touch-action: manipulation;
     }
 
     .card-confirm-btn:hover {
@@ -545,7 +551,7 @@
       border: 1.5px solid #2c3e50;
       padding: 1px 2px;
       text-align: center;
-      font-size: 8px;
+      font-size: 9px;
       font-weight: bold;
       display: flex;
       align-items: center;
@@ -599,10 +605,10 @@
       background-color: #ffffff;
       color: #000000;
       font-weight: bold;
-      font-size: 13px;
-      padding: 6px 10px;
+      font-size: 14px;
+      padding: 8px 10px;
       cursor: pointer;
-      min-height: 36px;
+      min-height: 40px;
     }
 
     .back-btn:hover {
@@ -617,9 +623,10 @@
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 15px;
-      padding: 0 12px;
-      min-height: 36px;
+      font-size: 16px;
+      padding: 6px 12px;
+      min-height: 40px;
+      text-align: center;
     }
 
     .summary-panel {
@@ -640,25 +647,20 @@
       gap: 8px;
     }
 
-    .summary-info-box {
+    .summary-info-box, .summary-sub-box {
       border: 1.5px solid #2c3e50;
       background-color: #ffffff;
-      padding: 6px 10px;
-      font-size: 13px;
+      padding: 8px 10px;
+      font-size: 14px;
       font-weight: 600;
-      min-height: 34px;
+      min-height: 36px;
       display: flex;
       align-items: center;
+      word-break: break-word;
     }
 
     .summary-sub-box {
-      border: 1.5px solid #2c3e50;
-      background-color: #ffffff;
-      padding: 6px 10px;
-      font-size: 13px;
-      min-height: 34px;
-      display: flex;
-      align-items: center;
+      font-weight: normal;
     }
 
     .summary-action-bar {
@@ -671,12 +673,12 @@
     .summary-total-box {
       border: 1.5px solid #2c3e50;
       background-color: #ffffff;
-      padding: 6px 10px;
-      font-size: 13px;
+      padding: 8px 10px;
+      font-size: 14px;
       font-weight: bold;
       display: flex;
       align-items: center;
-      min-height: 36px;
+      min-height: 40px;
     }
 
     #sumMoneyTotal {
@@ -693,12 +695,12 @@
     .summary-item-card {
       border: 1.5px solid #2c3e50;
       background-color: #ffffff;
-      padding: 8px 12px;
-      font-size: 13px;
-      line-height: 1.45;
+      padding: 10px 12px;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
-    /* ================= หน้า Order Form (โชว์เป็นภาพแทน) ================= */
+    /* ================= หน้า Order Form ================= */
     .history-screen {
       display: none;
       flex: 1;
@@ -739,7 +741,7 @@
 
     .history-record-row {
       border: 1.5px solid #2c3e50;
-      padding: 8px 12px;
+      padding: 10px 12px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -762,6 +764,7 @@
       padding: 2px 7px;
       font-size: 12px;
       font-weight: bold;
+      margin-bottom: 2px;
     }
 
     .image-preview-box {
@@ -786,25 +789,27 @@
       background-color: #ffbe00;
       color: #102538;
       font-weight: bold;
-      font-size: 12px;
-      padding: 5px 12px;
+      font-size: 13px;
+      padding: 7px 14px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 5px;
       line-height: 1.2;
-      min-width: 64px;
+      min-width: 72px;
+      min-height: 36px;
     }
 
     .action-small-btn:hover {
       background-color: #f0b000;
     }
 
+    /* ปุ่ม Save / Clear ไม่มีขอบ */
     .action-small-btn.save-green {
       background-color: #00a650;
       color: #ffffff;
-      border-color: #2c3e50;
+      border: none;
     }
 
     .action-small-btn.save-green:hover {
@@ -814,7 +819,7 @@
     .action-small-btn.clear-red {
       background-color: #d92d20;
       color: #ffffff;
-      border-color: #2c3e50;
+      border: none;
     }
 
     .action-small-btn.clear-red:hover {
@@ -865,7 +870,7 @@
     }
 
     .modal-title {
-      font-size: 17px;
+      font-size: 18px;
       font-weight: bold;
       color: #000000;
     }
@@ -874,16 +879,18 @@
       background-color: #00a650;
       color: #ffffff;
       border: 1.5px solid #2c3e50;
-      padding: 8px 16px;
-      font-size: 14px;
+      padding: 10px 18px;
+      font-size: 15px;
       font-weight: bold;
       cursor: pointer;
+      width: 100%;
     }
 
     .modal-btn:hover {
       background-color: #008741;
     }
 
+    /* ================= Responsive สำหรับ Tablet & Mobile ================= */
     @media (max-width: 900px) {
       .product-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -895,18 +902,166 @@
     }
 
     @media (max-width: 650px) {
-      html, body, .container {
+      html, body {
         height: auto;
-        overflow: auto;
+        min-height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
       }
-      .top-bar, .delivery-row-1, .search-bar, .summary-header-bar {
+
+      .container {
+        height: auto;
+        min-height: 100vh;
+        padding: 10px;
+        overflow: visible;
+      }
+
+      .login-screen {
+        min-height: calc(100vh - 20px);
+        padding: 8px;
+      }
+
+      .field-box input,
+      .field-box select,
+      .login-input-wrap input {
+        font-size: 16px;
+      }
+
+      .field-box {
+        min-height: 44px;
+        padding: 6px 10px;
+      }
+
+      .top-bar,
+      .delivery-row-1,
+      .summary-header-bar {
         grid-template-columns: 1fr;
+        gap: 8px;
       }
+
+      .search-bar {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .search-field-box {
+        grid-column: 1 / -1;
+        flex-wrap: wrap;
+        padding: 8px;
+      }
+
+      .search-field-box input {
+        flex: 1 1 180px;
+      }
+
+      .category-group {
+        width: 100%;
+        margin-top: 4px;
+      }
+
+      .category-select {
+        flex: 1;
+        max-width: none;
+        height: 36px;
+        font-size: 14px;
+      }
+
+      .cat-refresh-icon-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+      }
+
+      .confirm-box-green {
+        min-height: 44px;
+      }
+
+      .catalog-box {
+        overflow: visible;
+      }
+
       .product-wrapper {
-        max-height: 65vh;
+        max-height: none;
+        overflow: visible;
+        padding: 6px;
       }
+
       .product-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .product-card {
+        min-height: auto;
+        padding: 6px;
+        gap: 6px;
+      }
+
+      .card-img-box {
+        height: 140px;
+      }
+
+      .price-tag {
+        font-size: 11px;
+        padding: 2px 6px;
+      }
+
+      .code-barcode-text,
+      .unit-badge {
+        font-size: 10px;
+      }
+
+      .card-name-box {
+        font-size: 12px;
+        min-height: 44px;
+      }
+
+      .card-action-row {
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: 34px 32px;
+        gap: 4px;
+        min-height: auto;
+      }
+
+      .qty-btn:first-of-type {
+        grid-column: 1 / 2;
+        font-size: 18px;
+      }
+
+      .qty-input {
+        grid-column: 2 / 6;
+        font-size: 15px;
+      }
+
+      .qty-btn:last-of-type {
+        grid-column: 6 / 7;
+        font-size: 18px;
+      }
+
+      .card-confirm-btn {
+        grid-column: 1 / 4;
+        border: none;
+        font-size: 12px;
+      }
+
+      .confirmed-status-box {
+        grid-column: 4 / 7;
+        font-size: 11px;
+      }
+
+      .summary-panel,
+      .history-body {
+        overflow: visible;
+        padding: 10px;
+      }
+
+      .history-record-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .history-record-row .action-small-btn {
+        width: 100%;
       }
     }
   </style>
@@ -928,6 +1083,7 @@
           id="loginCustId"
           placeholder="20000XXXXX"
           autocomplete="off"
+          inputmode="text"
           onkeydown="if(event.key==='Enter') handleLogin()"
         >
       </div>
@@ -939,7 +1095,7 @@
       </button>
 
       <button type="button" class="login-secondary-btn" id="loginSyncBtn" onclick="syncCustomersFromSheet()">
-        &#8635; Refesh
+        &#8635; Refresh
       </button>
     </div>
   </div>
@@ -954,12 +1110,12 @@
 
     <div class="top-bar">
       <div class="field-box">
-        <label for="custId"> </label>
+        <label for="custId">รหัส :</label>
         <input type="text" id="custId" oninput="handleCustIdInput()">
-        <button type="button" class="logout-btn" onclick="logoutToLogin()">ออกจากระบบ</button>
+        <button type="button" class="logout-btn" onclick="logoutToLogin()">Log Out</button>
       </div>
       <div class="field-box">
-        <label for="custName"></label>
+        <label for="custName">ชื่อ :</label>
         <input type="text" id="custName">
       </div>
       <div class="field-box">
@@ -985,7 +1141,7 @@
         <div class="field-box" id="deliveryTypeBox">
           <label for="deliveryType">ประเภทการจัดส่ง :</label>
           <select id="deliveryType" onchange="clearMissingHighlight('deliveryType', 'deliveryTypeBox')">
-            <option value=""></option>
+            <option value="">เลือกประเภท</option>
             <option value="จัดส่ง">จัดส่ง</option>
             <option value="รับเอง">รับเอง</option>
           </select>
@@ -994,7 +1150,7 @@
       <div class="delivery-row-2">
         <div class="field-box">
           <label for="remark">หมายเหตุ :</label>
-          <input type="text" id="remark">
+          <input type="text" id="remark" placeholder="ระบุเพิ่มเติม (ถ้ามี)">
         </div>
       </div>
       <div id="orderValidationNote" class="inline-validation-note"></div>
@@ -1004,7 +1160,7 @@
       <div class="search-bar">
         <div class="field-box search-field-box">
           <label for="searchProduct">Search :</label>
-          <input type="text" id="searchProduct" placeholder="ชื่อสินค้า / รหัสสินค้า / บาร์โค๊ด" oninput="renderProducts()">
+          <input type="text" id="searchProduct" placeholder="ชื่อสินค้า / รหัส / บาร์โค๊ด" oninput="renderProducts()">
           <div class="category-group">
             <select id="categorySelect" class="category-select" onchange="onCategoryChange()" title="เลือกหมวดหมู่จากคอลัมน์ J">
               <option value="">หมวดหมู่</option>
@@ -1059,7 +1215,7 @@
     </div>
   </div>
 
-  <!-- ================= หน้า Order Form (โชว์เป็นภาพแทน) ================= -->
+  <!-- ================= หน้า Order Form ================= -->
   <div id="historyScreen" class="history-screen">
     <div class="summary-header-bar">
       <button type="button" class="back-btn" onclick="closeSavedHistoryScreen()">&lt;- กลับไปหน้าสั่งซื้อ</button>
@@ -1293,6 +1449,7 @@
     document.getElementById('orderScreen').style.display = 'none';
     document.getElementById('summaryScreen').classList.remove('active');
     document.getElementById('historyScreen').classList.add('active');
+    window.scrollTo(0, 0);
     renderSavedHistoryList(0);
   }
 
@@ -1304,30 +1461,30 @@
       document.getElementById('orderScreen').style.display = 'flex';
       updateSavedCountBadge();
     }
+    window.scrollTo(0, 0);
   }
 
   function renderSavedHistoryList(selectedIndex = 0) {
     const custId = getActiveCustomerId();
-    const custName = (document.getElementById('custName')?.value || '').trim();
     const listEl = document.getElementById('historyRecordList');
     const previewBox = document.getElementById('imagePreviewBox');
     const scopeLabel = document.getElementById('historyCustomerScopeLabel');
     const screenTitle = document.getElementById('historyScreenTitle');
     const records = getCustomerSavedOrders(custId);
 
-    const whoText = custId ? `${custId}${custName ? ' | ' + custName : ''}` : '-';
+    const whoText = custId || '-';
     if (scopeLabel) {
-      scopeLabel.textContent = `Order Form ของลูกค้า : ${whoText} (${records.length} บิล)`;
+      scopeLabel.textContent = `Order Form ของลูกค้า : [${whoText}] (${records.length} บิล)`;
     }
     if (screenTitle) {
-      screenTitle.textContent = `Order Form (${whoText})`;
+      screenTitle.textContent = `Order Form [${whoText}]`;
     }
 
     if (!listEl || !previewBox) return;
 
     if (records.length === 0) {
       listEl.innerHTML = '';
-      previewBox.innerHTML = `<div style="font-size:13px; color:#475467;">ยังไม่มี Order Form ของลูกค้า ${whoText}</div>`;
+      previewBox.innerHTML = `<div style="font-size:13px; color:#475467;">ยังไม่มี Order Form ของลูกค้า [${whoText}]</div>`;
       currentReceiptDataUrl = '';
       return;
     }
@@ -1339,8 +1496,7 @@
         <div>
           <span class="stamp-badge">วันสั่ง ${rec.orderDate}</span>
           <span class="stamp-badge">เวลาสั่ง ${rec.orderTime}</span>
-          <strong>${rec.custId} | ${rec.custName}</strong>
-          <span>— ${rec.totalAmount} (${rec.itemCount} รายการ)</span>
+          <strong>Amout : ${rec.totalAmount}</strong>
         </div>
         <button type="button" class="action-small-btn" onclick="renderSavedHistoryList(${idx})">
           View
@@ -1555,6 +1711,7 @@
     document.getElementById('summaryScreen').classList.remove('active');
     document.getElementById('historyScreen').classList.remove('active');
     document.getElementById('orderScreen').style.display = 'flex';
+    window.scrollTo(0, 0);
 
     const custIdEl = document.getElementById('custId');
     const custNameEl = document.getElementById('custName');
@@ -1582,6 +1739,7 @@
     document.getElementById('historyScreen').classList.remove('active');
     document.getElementById('orderScreen').style.display = 'none';
     document.getElementById('loginScreen').style.display = 'flex';
+    window.scrollTo(0, 0);
 
     const loginInput = document.getElementById('loginCustId');
     if (loginInput) {
@@ -1797,6 +1955,7 @@
             <span class="price-tag">฿${price.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
             <img
               src="${imgSrc}"
+              loading="lazy"
               referrerpolicy="no-referrer"
               alt="${item.name || ''}"
               title="${rawImg || 'ไม่มีลิงก์รูป'}"
@@ -1812,7 +1971,7 @@
           <div class="card-name-box">${item.name || ''}</div>
           <div class="card-action-row">
             <button type="button" class="qty-btn" onclick="changeQty('${item.code}', -1)">-</button>
-            <input type="number" class="qty-input" id="qty_${item.code}" value="${inputQty}" min="0">
+            <input type="number" inputmode="numeric" class="qty-input" id="qty_${item.code}" value="${inputQty}" min="0">
             <button type="button" class="qty-btn" onclick="changeQty('${item.code}', 1)">+</button>
             <button type="button" class="card-confirm-btn" onclick="confirmSingleItem('${item.code}')">ยืนยัน</button>
             <div class="confirmed-status-box ${confirmedQty > 0 ? 'has-qty' : ''}" id="status_${item.code}">
@@ -1922,6 +2081,7 @@
     const items = getSelectedItems();
     if (items.length === 0) {
       setValidationNote('กรุณากดยืนยันจำนวนสินค้าอย่างน้อย 1 รายการ');
+      document.getElementById('orderValidationNote')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
 
@@ -1954,12 +2114,14 @@
     document.getElementById('orderScreen').style.display = 'none';
     document.getElementById('historyScreen').classList.remove('active');
     document.getElementById('summaryScreen').classList.add('active');
+    window.scrollTo(0, 0);
   }
 
   function backToOrderScreen() {
     document.getElementById('summaryScreen').classList.remove('active');
     document.getElementById('orderScreen').style.display = 'flex';
     updateSavedCountBadge();
+    window.scrollTo(0, 0);
   }
 
   async function submitOrderToSheet() {
@@ -2014,6 +2176,7 @@
     document.getElementById('summaryScreen').classList.remove('active');
     document.getElementById('historyScreen').classList.remove('active');
     document.getElementById('orderScreen').style.display = 'flex';
+    window.scrollTo(0, 0);
 
     cartQuantities = {};
     setValidationNote('');
