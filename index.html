@@ -582,6 +582,7 @@
       font-weight: bold;
       outline: none;
       padding: 0 2px;
+      touch-action: manipulation;
       -moz-appearance: textfield;
     }
 
@@ -2122,7 +2123,7 @@
         <div class="card-name-box">${item.name || ''}</div>
         <div class="card-action-row">
           <button type="button" class="qty-btn" onclick="changeQty('${item.code}', -1)">-</button>
-          <input type="number" inputmode="numeric" class="qty-input" id="qty_${item.code}" value="${inputQty}" min="0" oninput="handleQtyInput('${item.code}')">
+          <input type="text" inputmode="numeric" pattern="[0-9]*" class="qty-input" id="qty_${item.code}" value="${inputQty}" oninput="handleQtyInput('${item.code}')" onblur="formatQtyOnBlur('${item.code}')">
           <button type="button" class="qty-btn" onclick="changeQty('${item.code}', 1)">+</button>
           <div class="confirmed-status-box ${confirmedQty > 0 ? 'has-qty' : ''}" id="status_${item.code}">
             ${formatOrderedStatus(confirmedQty, unit)}
@@ -2182,26 +2183,21 @@
     grid.innerHTML = filtered.map(buildProductCardHtml).join('');
   }
 
-  function applyCardQty(code, nextVal) {
-    const input = document.getElementById(`qty_${code}`);
+  function syncCardCartAndTotal(code, qty) {
     const product = productsData.find(p => String(p.code) === String(code));
     const unit = (product && product.unit) || 'ชิ้น';
-    const qty = nextVal > 0 ? Math.floor(nextVal) : 0;
+    const safeQty = qty > 0 ? Math.floor(qty) : 0;
 
-    if (input) {
-      input.value = qty > 0 ? String(qty) : '';
-    }
-
-    if (qty > 0) {
-      cartQuantities[code] = qty;
+    if (safeQty > 0) {
+      cartQuantities[code] = safeQty;
     } else {
       delete cartQuantities[code];
     }
 
     const statusBox = document.getElementById(`status_${code}`);
     if (statusBox) {
-      statusBox.textContent = formatOrderedStatus(qty, unit);
-      statusBox.classList.toggle('has-qty', qty > 0);
+      statusBox.textContent = formatOrderedStatus(safeQty, unit);
+      statusBox.classList.toggle('has-qty', safeQty > 0);
     }
 
     setValidationNote('', 'orderValidationNote');
@@ -2211,26 +2207,32 @@
   function handleQtyInput(code) {
     const input = document.getElementById(`qty_${code}`);
     if (!input) return;
-    const raw = String(input.value || '').trim();
-    if (raw === '') {
-      applyCardQty(code, 0);
-      return;
-    }
-    const parsed = parseInt(raw, 10);
-    if (!Number.isFinite(parsed) || parsed <= 0) {
-      applyCardQty(code, 0);
-      return;
-    }
-    applyCardQty(code, parsed);
+    const digitsOnly = String(input.value || '').replace(/[^0-9]/g, '');
+    const parsed = digitsOnly === '' ? 0 : parseInt(digitsOnly, 10);
+    syncCardCartAndTotal(code, Number.isFinite(parsed) && parsed > 0 ? parsed : 0);
+  }
+
+  function formatQtyOnBlur(code) {
+    const input = document.getElementById(`qty_${code}`);
+    if (!input) return;
+    const digitsOnly = String(input.value || '').replace(/[^0-9]/g, '');
+    const parsed = digitsOnly === '' ? 0 : parseInt(digitsOnly, 10);
+    const safeQty = Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+    input.value = safeQty > 0 ? String(safeQty) : '';
+    syncCardCartAndTotal(code, safeQty);
   }
 
   function changeQty(code, delta) {
     const input = document.getElementById(`qty_${code}`);
-    const currentRaw = input ? String(input.value || '').trim() : '';
+    const currentRaw = input ? String(input.value || '').replace(/[^0-9]/g, '') : '';
     const currentVal = currentRaw !== ''
       ? Math.max(0, parseInt(currentRaw, 10) || 0)
       : (cartQuantities[code] || 0);
-    applyCardQty(code, currentVal + delta);
+    const nextQty = Math.max(0, currentVal + delta);
+    if (input) {
+      input.value = nextQty > 0 ? String(nextQty) : '';
+    }
+    syncCardCartAndTotal(code, nextQty);
   }
 
   function getSelectedItems() {
