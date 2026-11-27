@@ -1156,7 +1156,7 @@
       .qty-input {
         grid-column: 2 / 3;
         grid-row: 1 / 2;
-        font-size: 12.5px;
+        font-size: 16px;
         min-height: 28px;
       }
 
@@ -1398,6 +1398,7 @@
   let previousActiveScreen = 'orderScreen';
   let currentReceiptDataUrl = '';
   let currentReceiptFilename = 'order-form.png';
+  let lastIsMobileLayout = window.innerWidth <= 650;
 
   function formatMoney2(val) {
     const num = Number(val || 0);
@@ -1428,7 +1429,11 @@
       setLoginMessage('เกิดข้อผิดพลาดในการเริ่มต้นระบบ: ' + err.message, 'error');
     }
     window.addEventListener('resize', () => {
-      if (productsData.length > 0) renderProducts();
+      const isMobileNow = window.innerWidth <= 650;
+      if (isMobileNow !== lastIsMobileLayout) {
+        lastIsMobileLayout = isMobileNow;
+        if (productsData.length > 0) renderProducts();
+      }
     });
   });
 
