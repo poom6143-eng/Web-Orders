@@ -1347,9 +1347,10 @@
     </div>
   </div>
 
-  <!-- ================= หน้าสั่งซื้อหลัก ================= -->
+ <!-- ================= หน้าสั่งซื้อหลัก ================= -->
   <div id="orderScreen" style="display:none; flex-direction:column; flex:1; min-height:0;">
     <div class="history-top-bar" id="historyTopBar">
+      <button type="button" class="logout-btn" onclick="logoutToLogin()">Log Out</button>
       <button type="button" class="saved-history-btn" onclick="openSavedHistoryScreen()">
         ประวัติคำสั่งซื้อ (<span id="savedCountBadge">0</span>)
       </button>
@@ -1359,7 +1360,6 @@
       <div class="field-box">
         <label for="custId">รหัส :</label>
         <input type="text" id="custId" class="cust-locked-input" readonly tabindex="-1">
-        <button type="button" class="logout-btn" onclick="logoutToLogin()">Log Out</button>
       </div>
       <div class="field-box">
         <label for="custName">ชื่อ :</label>
