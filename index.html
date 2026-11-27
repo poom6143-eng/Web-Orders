@@ -549,7 +549,7 @@
 
     .card-action-row {
       display: grid;
-      grid-template-columns: 20px 32px 20px 26px 1fr;
+      grid-template-columns: 20px 30px 20px 1fr;
       gap: 2px;
       align-items: stretch;
       min-height: 28px;
@@ -591,26 +591,11 @@
       margin: 0;
     }
 
-    .card-confirm-btn {
-      border: none;
-      background-color: #00a650;
-      color: transparent;
-      font-size: 0;
-      cursor: pointer;
-      padding: 0;
-      min-width: 22px;
-      touch-action: manipulation;
-    }
-
-    .card-confirm-btn:hover {
-      background-color: #008741;
-    }
-
     .confirmed-status-box {
       border: none;
-      padding: 1px 2px;
+      padding: 1px 3px;
       text-align: center;
-      font-size: 9px;
+      font-size: 9.5px;
       font-weight: bold;
       display: flex;
       align-items: center;
@@ -1177,15 +1162,8 @@
         grid-row: 1 / 2;
       }
 
-      .card-confirm-btn {
-        grid-column: 1 / 2;
-        grid-row: 2 / 3;
-        min-height: 26px;
-        min-width: 28px;
-      }
-
       .confirmed-status-box {
-        grid-column: 2 / 4;
+        grid-column: 1 / 4;
         grid-row: 2 / 3;
         font-size: 10px;
         min-height: 26px;
@@ -2146,7 +2124,6 @@
           <button type="button" class="qty-btn" onclick="changeQty('${item.code}', -1)">-</button>
           <input type="number" inputmode="numeric" class="qty-input" id="qty_${item.code}" value="${inputQty}" min="0" oninput="handleQtyInput('${item.code}')">
           <button type="button" class="qty-btn" onclick="changeQty('${item.code}', 1)">+</button>
-          <button type="button" class="card-confirm-btn" aria-label="ยืนยันจำนวน" onclick="confirmSingleItem('${item.code}')"></button>
           <div class="confirmed-status-box ${confirmedQty > 0 ? 'has-qty' : ''}" id="status_${item.code}">
             ${formatOrderedStatus(confirmedQty, unit)}
           </div>
@@ -2205,45 +2182,20 @@
     grid.innerHTML = filtered.map(buildProductCardHtml).join('');
   }
 
-  function handleQtyInput(code) {
+  function applyCardQty(code, nextVal) {
     const input = document.getElementById(`qty_${code}`);
-    if (!input) return;
-    const raw = String(input.value || '').trim();
-    if (raw === '') {
-      input.value = '';
-      return;
-    }
-    const parsed = parseInt(raw, 10);
-    if (!Number.isFinite(parsed) || parsed <= 0) {
-      input.value = '';
-      return;
-    }
-    input.value = String(parsed);
-  }
-
-  function changeQty(code, delta) {
-    const input = document.getElementById(`qty_${code}`);
-    if (!input) return;
-    const currentRaw = String(input.value || '').trim();
-    const currentVal = currentRaw === '' ? 0 : Math.max(0, parseInt(currentRaw, 10) || 0);
-    const nextVal = currentVal + delta;
-    input.value = nextVal > 0 ? String(nextVal) : '';
-  }
-
-  function confirmSingleItem(code) {
-    const input = document.getElementById(`qty_${code}`);
-    if (!input) return;
-    const raw = String(input.value || '').trim();
-    const qty = raw === '' ? 0 : Math.max(0, parseInt(raw, 10) || 0);
     const product = productsData.find(p => String(p.code) === String(code));
     const unit = (product && product.unit) || 'ชิ้น';
+    const qty = nextVal > 0 ? Math.floor(nextVal) : 0;
+
+    if (input) {
+      input.value = qty > 0 ? String(qty) : '';
+    }
 
     if (qty > 0) {
       cartQuantities[code] = qty;
-      input.value = String(qty);
     } else {
       delete cartQuantities[code];
-      input.value = '';
     }
 
     const statusBox = document.getElementById(`status_${code}`);
@@ -2251,7 +2203,34 @@
       statusBox.textContent = formatOrderedStatus(qty, unit);
       statusBox.classList.toggle('has-qty', qty > 0);
     }
+
+    setValidationNote('', 'orderValidationNote');
     calculateTotal();
+  }
+
+  function handleQtyInput(code) {
+    const input = document.getElementById(`qty_${code}`);
+    if (!input) return;
+    const raw = String(input.value || '').trim();
+    if (raw === '') {
+      applyCardQty(code, 0);
+      return;
+    }
+    const parsed = parseInt(raw, 10);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      applyCardQty(code, 0);
+      return;
+    }
+    applyCardQty(code, parsed);
+  }
+
+  function changeQty(code, delta) {
+    const input = document.getElementById(`qty_${code}`);
+    const currentRaw = input ? String(input.value || '').trim() : '';
+    const currentVal = currentRaw !== ''
+      ? Math.max(0, parseInt(currentRaw, 10) || 0)
+      : (cartQuantities[code] || 0);
+    applyCardQty(code, currentVal + delta);
   }
 
   function getSelectedItems() {
@@ -2326,7 +2305,7 @@
   function openSummaryScreen() {
     const items = getSelectedItems();
     if (items.length === 0) {
-      setValidationNote('กรุณากดยืนยันจำนวนสินค้าอย่างน้อย 1 รายการ', 'orderValidationNote');
+      setValidationNote('กรุณาเพิ่มจำนวนสินค้าอย่างน้อย 1 รายการก่อนยืนยัน', 'orderValidationNote');
       document.getElementById('orderValidationNote')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
