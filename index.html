@@ -47,7 +47,7 @@
       background-color: var(--lotus-yellow);
       color: var(--ink-dark);
       padding: 6px 10px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       font-size: 13px;
       font-weight: bold;
       display: flex;
@@ -71,6 +71,39 @@
 
     .saved-history-btn:hover {
       background-color: #f4f6f8;
+    }
+
+    /* ================= โลโก้มุมขวาบนใต้ Order Form ================= */
+    .top-right-brand-box {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 4px;
+      flex-shrink: 0;
+    }
+
+    .mini-orders-web-logo {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 0.98;
+      user-select: none;
+      padding: 2px 6px;
+    }
+
+    .mini-orders-web-logo .logo-top {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--lotus-yellow);
+      letter-spacing: -0.3px;
+    }
+
+    .mini-orders-web-logo .logo-bottom {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--lotus-green);
+      letter-spacing: -0.3px;
     }
 
     /* ================= หน้า Log In ================= */
@@ -250,9 +283,10 @@
 
     .top-bar {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr auto;
+      align-items: center;
       gap: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       flex-shrink: 0;
     }
 
@@ -1012,7 +1046,7 @@
 
       .history-top-bar {
         padding: 4px 6px;
-        margin-bottom: 5px;
+        margin-bottom: 4px;
       }
 
       .saved-history-btn {
@@ -1021,10 +1055,23 @@
       }
 
       .top-bar {
-        grid-template-columns: 1.05fr 1.35fr;
+        grid-template-columns: 1fr 1.15fr auto;
         gap: 4px;
         margin-bottom: 5px;
         flex-shrink: 0;
+      }
+
+      .top-right-brand-box {
+        padding-right: 2px;
+      }
+
+      .mini-orders-web-logo {
+        padding: 0 2px;
+      }
+
+      .mini-orders-web-logo .logo-top,
+      .mini-orders-web-logo .logo-bottom {
+        font-size: 13px;
       }
 
       .summary-date-time-row {
@@ -1318,6 +1365,12 @@
         <label for="custName">ชื่อ :</label>
         <input type="text" id="custName" class="cust-locked-input" readonly tabindex="-1">
       </div>
+      <div class="top-right-brand-box" title="Orders Web">
+        <div class="mini-orders-web-logo">
+          <span class="logo-top">Orders</span>
+          <span class="logo-bottom">Web</span>
+        </div>
+      </div>
     </div>
 
     <div class="section-box catalog-box">
@@ -1385,7 +1438,7 @@
             <input type="text" id="address" placeholder="พิมพ์ที่อยู่จัดส่ง" oninput="clearMissingHighlight('address', 'addressBox'); updateRedFieldColors();">
           </div>
           <div class="field-box" id="deliveryTypeBox">
-            <label for="deliveryType">ประเภทการจัดส่ง :</label>
+            <label for="deliveryType">การจัดส่ง :</label>
             <select id="deliveryType" onchange="handleDeliveryTypeChange()">
               <option value="">เลือกประเภท</option>
               <option value="จัดส่ง">จัดส่ง</option>
@@ -1592,7 +1645,7 @@
     if (typeBox) typeBox.classList.toggle('missing-required', !deliveryTypeVal);
 
     if (!addressVal) missing.push('ที่อยู่จัดส่ง');
-    if (!pickupTimeVal) missing.push('Time Slot (เวลารับ)');
+    if (!pickupTimeVal) missing.push('เวลารับ');
     if (!deliveryTypeVal) missing.push('ประเภทการจัดส่ง');
 
     if (missing.length > 0) {
