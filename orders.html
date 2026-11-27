@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>รับออร์เดอร์สินค้า | Order Intake</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --lotus-yellow: #f4c430;
+      --lotus-yellow-dark: #dca814;
+      --lotus-navy: #102538;
+      --lotus-green: #1e8468;
+      --lotus-red: #c92a2a;
+      --bg-page: #f4f6f9;
+      --bg-card: #ffffff;
+      --border-soft: #dce3ec;
+      --text-main: #102538;
+      --text-muted: #5c6b7a;
+      --item-unscanned: #6c757d;
+      --item-scanned: #1e8468;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Sarabun', 'Prompt', Tahoma, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+    }
+
+    .top-bar {
+      background-color: var(--lotus-yellow);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 2px solid var(--lotus-yellow-dark);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      flex-wrap: wrap;
+    }
+
+    .top-title {
+      font-family: 'Prompt', 'Sarabun', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      background: #ffffff;
+      color: var(--lotus-navy);
+      padding: 4px 12px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-count {
+      background: var(--lotus-red);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 16px auto;
+      padding: 0 12px 32px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 2px 6px rgba(16, 37, 56, 0.05);
+      margin-bottom: 14px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border-soft);
+      font-family: 'Prompt', 'Sarabun', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .action-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .action-small-btn {
+      font-family: 'Prompt', 'Sarabun', sans-serif;
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      padding: 6px 12px !important;
+      line-height: 1.2 !important;
+      border-radius: 6px !important;
+      width: auto !important;
+      min-height: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: opacity 0.15s ease;
+    }
+
+    .action-small-btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn-nav {
+      background-color: var(--lotus-navy) !important;
+      color: #ffffff !important;
+    }
+
+    .btn-save {
+      background-color: var(--lotus-green) !important;
+      color: #ffffff !important;
+    }
+
+    .btn-clear {
+      background-color: var(--lotus-red) !important;
+      color: #ffffff !important;
+    }
+
+    .action-small-btn.history-view-btn {
+      margin-left: auto !important;
+      background-color: var(--lotus-yellow) !important;
+      color: #ffffff !important;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+    }
+
+    .order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .history-record-row {
+      background: #fffbeb;
+      border: 1px solid #f3e2a3;
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+
+    .history-inline-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .stamp-badge {
+      background: var(--lotus-yellow);
+      color: var(--lotus-navy);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .order-sub {
+      margin-top: 5px;
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      background: #e9ecef;
+      color: var(--lotus-navy);
+    }
+
+    .status-pill.received {
+      background: #d3f9d8;
+      color: #1b5e20;
+    }
+
+    .order-meta-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-soft);
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .product-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .product-scan-card {
+      border: 1px solid #d0d7de;
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #ffffff;
+      color: var(--item-unscanned);
+      transition: all 0.2s ease;
+    }
+
+    .product-scan-card.scanned {
+      border-color: var(--item-scanned);
+      background: #f2fbf6;
+      color: var(--item-scanned);
+    }
+
+    .product-name {
+      font-family: 'Prompt', 'Sarabun', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .product-code-barcode {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .product-qty {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .scan-status-tag {
+      display: inline-block;
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 999px;
+      background: #e9ecef;
+      color: var(--item-unscanned);
+    }
+
+    .product-scan-card.scanned .scan-status-tag {
+      background: #d3f9d8;
+      color: var(--item-scanned);
+    }
+
+    .scanner-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(16, 37, 56, 0.85);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+
+    .scanner-modal.open {
+      display: flex;
+    }
+
+    .scanner-box {
+      width: 100%;
+      max-width: 460px;
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .scanner-video-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: #000000;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .scan-feedback {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      min-height: 20px;
+      color: var(--lotus-navy);
+    }
+
+    .manual-barcode-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .manual-barcode-row input {
+      flex: 1;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 14px;
+      padding: 6px 8px;
+      border: 1px solid var(--border-soft);
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <div class="action-row">
+      <a href="./index.html" class="action-small-btn btn-nav">&lt; หน้าสั่งสินค้า</a>
+      <span class="top-title">
+        รับออร์เดอร์สินค้า
+        <span id="orderCountBadge" class="badge-count">0</span>
+      </span>
+    </div>
+    <div class="action-row">
+      <button type="button" class="action-small-btn btn-nav" onclick="syncFromLocalStorage()">ดึงออร์เดอร์</button>
+      <button type="button" class="action-small-btn btn-clear" onclick="clearReceivedOrders()">Clear</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="orderListView" class="card">
+      <div class="card-header">
+        <span>รายการออร์เดอร์ที่ลูกค้าสั่งเข้ามา</span>
+        <span style="font-size:12px;color:var(--text-muted);">กด View เพื่อเปิดหน้าออร์เดอร์และสแกน</span>
+      </div>
+      <div id="orderListEl" class="order-list"></div>
+    </section>
+
+    <section id="orderDetailView" class="card" style="display:none;">
+      <div class="card-header">
+        <div class="action-row">
+          <button type="button" class="action-small-btn btn-nav" onclick="backToOrderList()">&lt; รายการออร์เดอร์</button>
+          <span id="detailOrderTitle">รายละเอียดออร์เดอร์</span>
+        </div>
+        <div class="action-row">
+          <button type="button" class="action-small-btn btn-save" onclick="openCameraScanner()">สแกนบาร์โค้ด</button>
+          <button type="button" class="action-small-btn btn-save" onclick="markSelectedReceived()">รับออร์เดอร์</button>
+        </div>
+      </div>
+
+      <div id="orderMetaBox" class="order-meta-box"></div>
+      <div id="productStackEl" class="product-stack"></div>
+    </section>
+  </main>
+
+  <div id="scannerModal" class="scanner-modal">
+    <div class="scanner-box">
+      <div class="card-header">
+        <span>สแกนบาร์โค้ดสินค้า</span>
+        <button type="button" class="action-small-btn btn-clear" onclick="closeCameraScanner()">ปิดกล้อง</button>
+      </div>
+      <div class="scanner-video-wrap">
+        <video id="cameraVideo" playsinline muted autoplay></video>
+      </div>
+      <div id="scanFeedback" class="scan-feedback">กำลังเตรียมกล้อง... (สแกนตรงกับรหัสสินค้าหรือเลขบาร์โค้ด)</div>
+      <div class="manual-barcode-row">
+        <input id="manualBarcodeInput" type="text" placeholder="ยิงหรือพิมพ์รหัสสินค้า / เลขบาร์โค้ด แล้วกดยืนยัน" onkeydown="if(event.key==='Enter') handleScannedCode(this.value)" />
+        <button type="button" class="action-small-btn btn-save" onclick="handleScannedCode(document.getElementById('manualBarcodeInput').value)">ยืนยัน</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEYS = ['savedOrdersHistory', 'orderHistory', 'ordersData', 'webOrdersQueue'];
+    const INTAKE_KEY = 'intakeReceivedOrders_v2';
+
+    let orders = [];
+    let activeOrderIndex = 0;
+
+    let cameraStream = null;
+    let scanLoopId = null;
+    let barcodeDetector = null;
+    let lastScannedCode = '';
+    let lastScannedAt = 0;
+
+    function formatMoney2(num) {
+      const n = Number(num) || 0;
+      return n.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function normalizeItem(it, idx) {
+      const code = String(it.code || it.productCode || it.sku || it.id || `SKU-${idx + 1}`).trim();
+      const barcode = String(it.barcode || it.barCode || it.ean || code).trim();
+      return {
+        name: String(it.name || it.productName || it.title || 'สินค้า').trim(),
+        code,
+        barcode,
+        qty: Number(it.qty || it.quantity || 1),
+        price: Number(it.price || it.unitPrice || 0),
+        scanned: Boolean(it.scanned)
+      };
+    }
+
+    function normalizeOrder(raw, idx) {
+      const rawItems = Array.isArray(raw.items) ? raw.items : [];
+      const items = rawItems.map((it, i) => normalizeItem(it, i));
+      const computedTotal = items.reduce((sum, it) => sum + (it.qty * it.price), 0);
+      const totalAmount = Number(String(raw.totalAmount ?? raw.total ?? computedTotal).replace(/[^0-9.-]+/g, '')) || computedTotal;
+
+      return {
+        id: raw.id || `ORD-${Date.now()}-${idx}`,
+        orderDate: raw.orderDate || raw.date || new Date().toLocaleDateString('en-GB'),
+        orderTime: raw.orderTime || raw.time || new Date().toLocaleTimeString('en-GB'),
+        customer: raw.customer || raw.customerName || 'ลูกค้าทั่วไป',
+        delivery: raw.delivery || raw.deliveryInfo || 'รับเอง',
+        address: raw.address || '-',
+        note: raw.note || '-',
+        status: raw.status || 'รอรับออร์เดอร์',
+        totalAmount,
+        items
+      };
+    }
+
+    function syncFromLocalStorage() {
+      let found = [];
+      for (const key of STORAGE_KEYS) {
+        try {
+          const val = localStorage.getItem(key);
+          if (val) {
+            const parsed = JSON.parse(val);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              found = parsed.map((r, i) => normalizeOrder(r, i));
+              break;
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (found.length === 0) {
+        found = [
+          normalizeOrder({
+            id: 'SAMPLE-001',
+            orderDate: '27/11/2026',
+            orderTime: '22:46:41',
+            customer: 'ลูกค้า : 1 | 1',
+            delivery: '14:00-17:00น. (2026-11-28) | รับเอง',
+            address: 'มารับสินค้าเองที่สาขา',
+            note: '-',
+            status: 'รอรับออร์เดอร์',
+            items: [
+              {
+                name: 'S_ทิพรสน้ำปลา ขวดเพชรุ้ง 700ซีซี.',
+                code: '000049301',
+                barcode: '8850123456789',
+                qty: 4,
+                price: 30,
+                scanned: false
+              },
+              {
+                name: 'น้ำมันพืช 1 ลิตร',
+                code: '000049302',
+                barcode: '8859876543210',
+                qty: 2,
+                price: 55,
+                scanned: false
+              }
+            ]
+          }, 0)
+        ];
+      }
+
+      orders = found;
+      activeOrderIndex = 0;
+      saveOrders();
+      renderOrderList();
+    }
+
+    function saveOrders() {
+      try {
+        localStorage.setItem(INTAKE_KEY, JSON.stringify(orders));
+      } catch (e) {}
+    }
+
+    function renderOrderList() {
+      const listEl = document.getElementById('orderListEl');
+      const badgeEl = document.getElementById('orderCountBadge');
+      badgeEl.textContent = String(orders.length);
+
+      if (!orders.length) {
+        listEl.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">ยังไม่มีออร์เดอร์ที่เข้ามา</p>';
+        return;
+      }
+
+      listEl.innerHTML = orders.map((rec, idx) => {
+        const scannedCount = rec.items.filter(i => i.scanned).length;
+        return `
+          <div class="history-record-row">
+            <div class="history-inline-group">
+              <span class="stamp-badge">วันสั่ง ${rec.orderDate}</span>
+              <span class="stamp-badge">เวลาสั่ง ${rec.orderTime}</span>
+              <strong>Amount : ฿${formatMoney2(rec.totalAmount)}</strong>
+              <button type="button" class="action-small-btn history-view-btn" onclick="openOrderDetail(${idx})">
+                View
+              </button>
+            </div>
+            <div class="order-sub">
+              <span>${rec.customer} (${rec.items.length} รายการ | สแกนแล้ว ${scannedCount}/${rec.items.length})</span>
+              <span class="status-pill ${rec.status === 'รับออร์เดอร์แล้ว' ? 'received' : ''}">${rec.status}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openOrderDetail(idx) {
+      activeOrderIndex = idx;
+      document.getElementById('orderListView').style.display = 'none';
+      document.getElementById('orderDetailView').style.display = 'block';
+      renderOrderDetail();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function backToOrderList() {
+      closeCameraScanner();
+      document.getElementById('orderDetailView').style.display = 'none';
+      document.getElementById('orderListView').style.display = 'block';
+      renderOrderList();
+    }
+
+    function renderOrderDetail() {
+      const record = orders[activeOrderIndex];
+      if (!record) return;
+
+      document.getElementById('detailOrderTitle').textContent = `ออร์เดอร์ : ${record.customer}`;
+
+      document.getElementById('orderMetaBox').innerHTML = `
+        <div><strong>วันสั่ง:</strong> ${record.orderDate} | <strong>เวลาสั่ง:</strong> ${record.orderTime}</div>
+        <div><strong>รับ/จัดส่ง:</strong> ${record.delivery} | <strong>สถานะ:</strong> ${record.status}</div>
+        <div><strong>ยอดรวม:</strong> ฿${formatMoney2(record.totalAmount)} | <strong>หมายเหตุ:</strong> ${record.note}</div>
+      `;
+
+      const stackEl = document.getElementById('productStackEl');
+      stackEl.innerHTML = record.items.map((item, idx) => `
+        <div id="productCard-${idx}" class="product-scan-card ${item.scanned ? 'scanned' : ''}">
+          <div class="product-name">${item.name}</div>
+          <div class="product-code-barcode">${item.code} | ${item.barcode}</div>
+          <div class="product-qty">จำนวน ${item.qty}</div>
+          <span class="scan-status-tag">${item.scanned ? 'สแกนตรงแล้ว' : 'รอสแกน'}</span>
+        </div>
+      `).join('');
+    }
+
+    function markSelectedReceived() {
+      if (!orders[activeOrderIndex]) return;
+      orders[activeOrderIndex].status = 'รับออร์เดอร์แล้ว';
+      saveOrders();
+      renderOrderDetail();
+    }
+
+    function clearReceivedOrders() {
+      orders = orders.filter(o => o.status !== 'รับออร์เดอร์แล้ว');
+      activeOrderIndex = 0;
+      saveOrders();
+      backToOrderList();
+    }
+
+    async function openCameraScanner() {
+      const modal = document.getElementById('scannerModal');
+      const feedbackEl = document.getElementById('scanFeedback');
+      const videoEl = document.getElementById('cameraVideo');
+
+      modal.classList.add('open');
+      feedbackEl.style.color = '#102538';
+      feedbackEl.textContent = 'กำลังเปิดกล้อง...';
+
+      if ('BarcodeDetector' in window) {
+        try {
+          barcodeDetector = new BarcodeDetector({
+            formats: ['code_128', 'code_39', 'ean_13', 'ean_8', 'upc_a', 'upc_e', 'codabar', 'itf', 'qr_code']
+          });
+        } catch (e) {
+          barcodeDetector = new BarcodeDetector();
+        }
+      } else {
+        barcodeDetector = null;
+        feedbackEl.textContent = 'เบราว์เซอร์นี้ไม่รองรับ BarcodeDetector อัตโนมัติ สามารถพิมพ์/ยิงบาร์โค้ดในช่องด้านล่างได้ครับ';
+      }
+
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        try {
+          cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: 'environment' } },
+            audio: false
+          });
+          videoEl.srcObject = cameraStream;
+          await videoEl.play();
+          if (barcodeDetector) {
+            feedbackEl.textContent = 'กล้องพร้อมแล้ว — หันบาร์โค้ดเข้ากล้องได้เลย';
+            startScanLoop(videoEl);
+          }
+        } catch (err) {
+          feedbackEl.textContent = 'ไม่สามารถเข้าถึงกล้องได้ (กรุณาอนุญาตสิทธิ์กล้อง หรือพิมพ์/ยิงบาร์โค้ดด้านล่าง)';
+        }
+      }
+    }
+
+    function startScanLoop(videoEl) {
+      stopScanLoop();
+      const loop = async () => {
+        if (!document.getElementById('scannerModal').classList.contains('open')) return;
+        if (barcodeDetector && videoEl.readyState === 4) {
+          try {
+            const barcodes = await barcodeDetector.detect(videoEl);
+            if (barcodes && barcodes.length > 0) {
+              const rawValue = String(barcodes[0].rawValue || '').trim();
+              const now = Date.now();
+              if (rawValue && (rawValue !== lastScannedCode || now - lastScannedAt > 1500)) {
+                lastScannedCode = rawValue;
+                lastScannedAt = now;
+                handleScannedCode(rawValue);
+              }
+            }
+          } catch (e) {}
+        }
+        scanLoopId = requestAnimationFrame(loop);
+      };
+      scanLoopId = requestAnimationFrame(loop);
+    }
+
+    function stopScanLoop() {
+      if (scanLoopId) {
+        cancelAnimationFrame(scanLoopId);
+        scanLoopId = null;
+      }
+    }
+
+    function closeCameraScanner() {
+      stopScanLoop();
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+      const videoEl = document.getElementById('cameraVideo');
+      if (videoEl) {
+        videoEl.srcObject = null;
+      }
+      document.getElementById('scannerModal').classList.remove('open');
+    }
+
+    function handleScannedCode(rawCode) {
+      const code = String(rawCode || '').trim();
+      const feedbackEl = document.getElementById('scanFeedback');
+      if (!code) return;
+
+      const record = orders[activeOrderIndex];
+      if (!record) return;
+
+      const matchedIndex = record.items.findIndex(item =>
+        String(item.barcode).trim() === code || String(item.code).trim() === code
+      );
+
+      if (matchedIndex !== -1) {
+        record.items[matchedIndex].scanned = true;
+        saveOrders();
+        renderOrderDetail();
+        feedbackEl.style.color = '#1e8468';
+        feedbackEl.textContent = `ตรงกับรายการ: ${record.items[matchedIndex].name} (${code}) -> เปลี่ยนเป็นสีเขียวแล้ว`;
+      } else {
+        feedbackEl.style.color = '#c92a2a';
+        feedbackEl.textContent = `ไม่พบบาร์โค้ด "${code}" ในออร์เดอร์นี้`;
+      }
+
+      const manualInput = document.getElementById('manualBarcodeInput');
+      if (manualInput) manualInput.value = '';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      try {
+        const saved = localStorage.getItem(INTAKE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length) {
+            orders = parsed.map((r, i) => normalizeOrder(r, i));
+            renderOrderList();
+            return;
+          }
+        }
+      } catch (e) {}
+      syncFromLocalStorage();
+    });
+  </script>
+</body>
+</html>
