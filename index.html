@@ -175,7 +175,6 @@
       color: #475467;
     }
 
-    /* ปุ่ม Log Out ไม่มีขอบ */
     .logout-btn {
       border: none;
       background-color: #d92d20;
@@ -274,7 +273,7 @@
       white-space: nowrap;
       margin-right: 6px;
       font-size: 14px;
-      color: #000;
+      color: #000000;
     }
 
     .field-box input,
@@ -283,8 +282,20 @@
       outline: none;
       width: 100%;
       font-size: 14px;
+      font-weight: normal;
       background: transparent;
-      color: #000;
+      color: #000000;
+    }
+
+    .cust-locked-input {
+      color: #008741 !important;
+      font-weight: normal !important;
+      cursor: default;
+    }
+
+    .red-filled-text {
+      color: #d92d20 !important;
+      font-weight: normal !important;
     }
 
     #totalAmount {
@@ -355,11 +366,12 @@
       cursor: not-allowed;
     }
 
+    /* ปุ่มยืนยันสีเขียว ไม่มีขอบ */
     .confirm-box-green {
       background-color: #00a650;
       cursor: pointer;
       justify-content: center;
-      border: 1.5px solid #2c3e50;
+      border: none;
       min-height: 38px;
     }
 
@@ -729,7 +741,7 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
       gap: 8px;
     }
 
@@ -805,7 +817,6 @@
       background-color: #f0b000;
     }
 
-    /* ปุ่ม Save / Clear ไม่มีขอบ */
     .action-small-btn.save-green {
       background-color: #00a650;
       color: #ffffff;
@@ -1111,16 +1122,16 @@
     <div class="top-bar">
       <div class="field-box">
         <label for="custId">รหัส :</label>
-        <input type="text" id="custId" oninput="handleCustIdInput()">
+        <input type="text" id="custId" class="cust-locked-input" readonly tabindex="-1">
         <button type="button" class="logout-btn" onclick="logoutToLogin()">Log Out</button>
       </div>
       <div class="field-box">
         <label for="custName">ชื่อ :</label>
-        <input type="text" id="custName">
+        <input type="text" id="custName" class="cust-locked-input" readonly tabindex="-1">
       </div>
       <div class="field-box">
         <label for="pickupDate">วันรับสินค้า :</label>
-        <input type="date" id="pickupDate" onchange="enforceNextDayDate()">
+        <input type="date" id="pickupDate" onchange="enforceNextDayDate(); updateRedFieldColors();">
       </div>
     </div>
 
@@ -1128,11 +1139,11 @@
       <div class="delivery-row-1">
         <div class="field-box" id="addressBox">
           <label for="address">ที่อยู่จัดส่ง :</label>
-          <input type="text" id="address" placeholder="พิมพ์ที่อยู่จัดส่ง" oninput="clearMissingHighlight('address', 'addressBox')">
+          <input type="text" id="address" placeholder="พิมพ์ที่อยู่จัดส่ง" oninput="clearMissingHighlight('address', 'addressBox'); updateRedFieldColors();">
         </div>
         <div class="field-box" id="pickupTimeBox">
           <label for="pickupTime">เวลารับ :</label>
-          <select id="pickupTime" onchange="clearMissingHighlight('pickupTime', 'pickupTimeBox')">
+          <select id="pickupTime" onchange="clearMissingHighlight('pickupTime', 'pickupTimeBox'); updateRedFieldColors();">
             <option value="">เลือกเวลา</option>
             <option value="10:00-14:00น.">10:00-14:00น.</option>
             <option value="14:00-17:00น.">14:00-17:00น.</option>
@@ -1140,7 +1151,7 @@
         </div>
         <div class="field-box" id="deliveryTypeBox">
           <label for="deliveryType">ประเภทการจัดส่ง :</label>
-          <select id="deliveryType" onchange="clearMissingHighlight('deliveryType', 'deliveryTypeBox')">
+          <select id="deliveryType" onchange="clearMissingHighlight('deliveryType', 'deliveryTypeBox'); updateRedFieldColors();">
             <option value="">เลือกประเภท</option>
             <option value="จัดส่ง">จัดส่ง</option>
             <option value="รับเอง">รับเอง</option>
@@ -1150,7 +1161,7 @@
       <div class="delivery-row-2">
         <div class="field-box">
           <label for="remark">หมายเหตุ :</label>
-          <input type="text" id="remark" placeholder="ระบุเพิ่มเติม (ถ้ามี)">
+          <input type="text" id="remark" placeholder="ระบุเพิ่มเติม (ถ้ามี)" oninput="updateRedFieldColors()">
         </div>
       </div>
       <div id="orderValidationNote" class="inline-validation-note"></div>
@@ -1175,7 +1186,7 @@
           <input type="text" id="totalAmount" readonly value="฿0.00">
         </div>
         <div class="field-box confirm-box-green" onclick="openSummaryScreen()" title="คลิกเพื่อดูสรุปรายการสั่งซื้อ">
-          <span>Confirm</span>
+          <span>ยืนยัน</span>
         </div>
       </div>
 
@@ -1207,7 +1218,7 @@
         <div class="summary-total-box" id="sumCountTotal">จำนวนสินค้าทั้งหมด 0 ชิ้น | 0 รายการ</div>
         <div class="summary-total-box" id="sumMoneyTotal">Total : ฿0.00</div>
         <button type="button" class="confirm-box-green" id="submitOrderBtn" onclick="submitOrderToSheet()">
-          <span>Confirm</span>
+          <span>ยืนยัน</span>
         </button>
       </div>
 
@@ -1224,7 +1235,6 @@
 
     <div class="history-body">
       <div class="history-toolbar">
-        <div id="historyCustomerScopeLabel" style="font-size:13px; font-weight:bold;">Order Form ของลูกค้า : -</div>
         <div style="display:flex; gap:6px;">
           <button type="button" class="action-small-btn save-green" onclick="downloadCurrentReceiptImage()">
             <span>Save</span>
@@ -1237,9 +1247,7 @@
 
       <div id="historyRecordList" class="history-record-list"></div>
 
-      <div class="image-preview-box" id="imagePreviewBox">
-        <div style="font-size:13px; color:#475467;">ยังไม่มี Order Form ของลูกค้ารายนี้</div>
-      </div>
+      <div class="image-preview-box" id="imagePreviewBox"></div>
     </div>
   </div>
 
@@ -1280,6 +1288,7 @@
   window.addEventListener('DOMContentLoaded', () => {
     try {
       setDefaultNextDay();
+      updateRedFieldColors();
       updateSavedCountBadge();
       dataLoadedPromise = loadInitialDataWithCache().then(() => {
         setLoginMessage(
@@ -1296,6 +1305,17 @@
       setLoginMessage('เกิดข้อผิดพลาดในการเริ่มต้นระบบ: ' + err.message, 'error');
     }
   });
+
+  /* เปลี่ยนตัวหนังสือเป็นสีแดงเมื่อมีการกรอกหรือเลือกในช่อง ที่อยู่จัดส่ง / ประเภทการจัดส่ง / เวลา / วันที่ / หมายเหตุ */
+  function updateRedFieldColors() {
+    const redIds = ['address', 'deliveryType', 'pickupTime', 'pickupDate', 'remark'];
+    redIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const hasVal = (el.value || '').trim() !== '';
+      el.classList.toggle('red-filled-text', hasVal);
+    });
+  }
 
   function setValidationNote(msg = '') {
     const noteEl = document.getElementById('orderValidationNote');
@@ -1468,23 +1488,18 @@
     const custId = getActiveCustomerId();
     const listEl = document.getElementById('historyRecordList');
     const previewBox = document.getElementById('imagePreviewBox');
-    const scopeLabel = document.getElementById('historyCustomerScopeLabel');
     const screenTitle = document.getElementById('historyScreenTitle');
     const records = getCustomerSavedOrders(custId);
 
-    const whoText = custId || '-';
-    if (scopeLabel) {
-      scopeLabel.textContent = `Order Form ของลูกค้า : [${whoText}] (${records.length} บิล)`;
-    }
     if (screenTitle) {
-      screenTitle.textContent = `Order Form [${whoText}]`;
+      screenTitle.textContent = 'Order Form';
     }
 
     if (!listEl || !previewBox) return;
 
     if (records.length === 0) {
       listEl.innerHTML = '';
-      previewBox.innerHTML = `<div style="font-size:13px; color:#475467;">ยังไม่มี Order Form ของลูกค้า [${whoText}]</div>`;
+      previewBox.innerHTML = '';
       currentReceiptDataUrl = '';
       return;
     }
@@ -1722,13 +1737,20 @@
     ).trim();
 
     activeLoggedInCustId = canonicalId;
-    if (custIdEl) custIdEl.value = canonicalId;
-    if (custNameEl) custNameEl.value = foundCustomer.name || foundCustomer.custName || '';
+    if (custIdEl) {
+      custIdEl.value = canonicalId;
+      custIdEl.readOnly = true;
+    }
+    if (custNameEl) {
+      custNameEl.value = foundCustomer.name || foundCustomer.custName || '';
+      custNameEl.readOnly = true;
+    }
     if (addrEl && foundCustomer.address) addrEl.value = foundCustomer.address;
 
     clearMissingHighlight('address', 'addressBox');
     clearMissingHighlight('pickupTime', 'pickupTimeBox');
     clearMissingHighlight('deliveryType', 'deliveryTypeBox');
+    updateRedFieldColors();
     updateSavedCountBadge();
   }
 
@@ -2048,6 +2070,7 @@
       if (addrEl && found.address) {
         addrEl.value = found.address;
         clearMissingHighlight('address', 'addressBox');
+        updateRedFieldColors();
       }
     }
   }
@@ -2063,6 +2086,7 @@
     const minDate = `${yyyy}-${mm}-${dd}`;
     dateInput.min = minDate;
     if (!dateInput.value) dateInput.value = minDate;
+    updateRedFieldColors();
   }
 
   function enforceNextDayDate() {
@@ -2071,6 +2095,7 @@
     if (dateInput.value && dateInput.min && dateInput.value < dateInput.min) {
       dateInput.value = dateInput.min;
     }
+    updateRedFieldColors();
   }
 
   function openSummaryScreen() {
@@ -2195,14 +2220,19 @@
     const custIdEl = document.getElementById('custId');
     if (custIdEl && activeLoggedInCustId) {
       custIdEl.value = activeLoggedInCustId;
+      custIdEl.readOnly = true;
       autoFillCustomer();
     }
+
+    const custNameEl = document.getElementById('custName');
+    if (custNameEl) custNameEl.readOnly = true;
 
     clearMissingHighlight('address', 'addressBox');
     clearMissingHighlight('pickupTime', 'pickupTimeBox');
     clearMissingHighlight('deliveryType', 'deliveryTypeBox');
 
     setDefaultNextDay();
+    updateRedFieldColors();
     calculateTotal();
     renderProducts();
     updateSavedCountBadge();
