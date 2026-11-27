@@ -1472,7 +1472,7 @@
   <!-- ================= หน้า ประวัติคำสั่งซื้อ ================= -->
   <div id="historyScreen" class="history-screen">
     <div class="summary-header-bar">
-      <button type="button" class="back-btn" onclick="closeSavedHistoryScreen()">&lt;- กลับไปหน้าสั่งซื้อ</button>
+      <button type="button" class="back-btn" onclick="closeSavedHistoryScreen()">&lt; กลับไปหน้าสั่งซื้อ</button>
       <div class="summary-title-box" id="historyScreenTitle">ประวัติคำสั่งซื้อ</div>
     </div>
 
@@ -1794,7 +1794,7 @@
     const records = getCustomerSavedOrders(custId);
 
     if (screenTitle) {
-      screenTitle.textContent = 'Order Form';
+      screenTitle.textContent = 'ประวัติการสั่งสินค้า';
     }
 
     if (!listEl || !previewBox) return;
@@ -2240,7 +2240,7 @@
     const currentVal = select.value;
     const categories = [...new Set(productsData.map(p => p.category).filter(Boolean))];
 
-    select.innerHTML = `<option value="">หมวดหมู่ (ทั้งหมด)</option>` +
+    select.innerHTML = `<option value="">หมวดหมู่</option>` +
       categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
     select.value = currentVal;
   }
@@ -2490,7 +2490,7 @@
     const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
     const totalMoney = items.reduce((sum, item) => sum + item.subtotal, 0);
 
-    document.getElementById('sumCustomerInfo').textContent = `รหัสลูกค้า : ${custId}  |  ชื่อ : ${custName}`;
+    document.getElementById('sumCustomerInfo').textContent = ` ${custId}  |   ${custName}`;
     document.getElementById('sumCountTotal').textContent = `จำนวนสินค้าทั้งหมด ${totalQty} ชิ้น | ${items.length} รายการ`;
     document.getElementById('sumMoneyTotal').textContent = `Total : ${formatMoney2(totalMoney)}`;
 
