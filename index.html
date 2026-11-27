@@ -3,8 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>หน้าสั่งซื้อสินค้า</title>
+  <title>Orders Web</title>
   <style>
+    :root {
+      --lotus-green: #269984;
+      --lotus-green-dark: #1f7d6c;
+      --lotus-green-soft: #e6f4f1;
+      --lotus-yellow: #f4c534;
+      --lotus-yellow-dark: #e3b424;
+      --lotus-yellow-soft: #fdf7e2;
+      --ink-dark: #102538;
+    }
+
     *, *::before, *::after {
       box-sizing: border-box;
       font-family: 'Sarabun', Tahoma, sans-serif;
@@ -34,8 +44,8 @@
     /* ================= แถบประวัติการสั่งสินค้า ================= */
     .history-top-bar {
       border: none;
-      background-color: #ffbe00;
-      color: #102538;
+      background-color: var(--lotus-yellow);
+      color: var(--ink-dark);
       padding: 6px 10px;
       margin-bottom: 10px;
       font-size: 13px;
@@ -50,7 +60,7 @@
     .saved-history-btn {
       border: none;
       background-color: #ffffff;
-      color: #102538;
+      color: var(--ink-dark);
       font-weight: bold;
       font-size: 13px;
       padding: 5px 12px;
@@ -72,27 +82,39 @@
       justify-content: center;
       background-color: #ffffff;
       padding: 16px;
+      overflow-y: auto;
     }
 
     .login-card {
       width: 100%;
-      max-width: 420px;
-      border: none;
+      max-width: 400px;
       background-color: #ffffff;
-      padding: 24px 20px;
+      border-radius: 14px;
+      box-shadow: 0 12px 32px rgba(16, 37, 56, 0.12);
+      border: 1px solid #eef2f6;
+      padding: 28px 24px 24px;
       display: flex;
       flex-direction: column;
       gap: 14px;
     }
 
-    .login-header-box {
-      border: none;
-      background-color: #ffbe00;
-      color: #102538;
-      padding: 10px 12px;
+    .login-brand {
       text-align: center;
-      font-size: 18px;
-      font-weight: bold;
+      line-height: 1.05;
+      font-weight: 800;
+      font-size: 38px;
+      letter-spacing: -0.5px;
+    }
+
+    .login-brand .brand-orders {
+      display: block;
+      color: var(--lotus-yellow);
+    }
+
+    .login-brand .brand-web {
+      display: block;
+      color: var(--lotus-green);
+      margin-top: 2px;
     }
 
     .login-sub {
@@ -100,47 +122,81 @@
       color: #475467;
       text-align: center;
       line-height: 1.4;
+      margin-top: -2px;
+    }
+
+    .login-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .login-field-group label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--lotus-green);
     }
 
     .login-input-wrap {
-      border: none;
-      padding: 8px 10px;
+      border: 1.5px solid var(--lotus-green);
+      border-radius: 8px;
+      padding: 6px 10px;
       display: flex;
       align-items: center;
       background-color: #ffffff;
       min-height: 44px;
     }
 
-    .login-input-wrap label {
-      font-weight: bold;
-      white-space: nowrap;
-      margin-right: 8px;
-      font-size: 15px;
-      color: #000000;
-    }
-
     .login-input-wrap input {
       border: none;
       outline: none;
       width: 100%;
-      font-size: 16px;
+      font-size: 15px;
       background: transparent;
       color: #000000;
     }
 
+    .remember-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2px;
+    }
+
+    .remember-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #102538;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .remember-label input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--lotus-green);
+      cursor: pointer;
+      margin: 0;
+    }
+
     .login-btn {
-      background-color: #00a650;
+      background-color: var(--lotus-green);
       color: #ffffff;
       border: none;
-      padding: 10px 14px;
-      font-size: 16px;
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 15px;
       font-weight: bold;
+      letter-spacing: 0.4px;
       cursor: pointer;
       min-height: 44px;
     }
 
     .login-btn:hover:not(:disabled) {
-      background-color: #008741;
+      background-color: var(--lotus-green-dark);
     }
 
     .login-btn:disabled {
@@ -149,18 +205,19 @@
     }
 
     .login-secondary-btn {
-      background-color: #ffffff;
-      color: #102538;
-      border: none;
+      background-color: var(--lotus-yellow-soft);
+      color: var(--ink-dark);
+      border: 1px solid var(--lotus-yellow);
+      border-radius: 8px;
       padding: 8px 10px;
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: bold;
       cursor: pointer;
-      min-height: 40px;
+      min-height: 38px;
     }
 
     .login-secondary-btn:hover:not(:disabled) {
-      background-color: #f4f6f8;
+      background-color: var(--lotus-yellow);
     }
 
     .login-msg {
@@ -296,7 +353,7 @@
     }
 
     .cust-locked-input {
-      color: #008741 !important;
+      color: var(--lotus-green) !important;
       font-weight: normal !important;
       cursor: default;
     }
@@ -324,9 +381,9 @@
       max-width: 205px;
       height: 30px;
       padding: 0 8px;
-      background-color: #ffbe00 !important;
+      background-color: var(--lotus-yellow) !important;
       border: none !important;
-      color: #102538;
+      color: var(--ink-dark);
       font-weight: bold;
       font-size: 13px;
       cursor: pointer;
@@ -334,17 +391,17 @@
     }
 
     .category-select:hover {
-      background-color: #f0b000 !important;
+      background-color: var(--lotus-yellow-dark) !important;
     }
 
     .category-select.has-filter {
-      background-color: #e6ab00 !important;
-      color: #102538;
+      background-color: var(--lotus-yellow-dark) !important;
+      color: var(--ink-dark);
     }
 
     .category-select option {
       background-color: #ffffff;
-      color: #102538;
+      color: var(--ink-dark);
       font-weight: bold;
     }
 
@@ -352,9 +409,9 @@
       width: 30px;
       height: 30px;
       padding: 0;
-      background-color: #ffbe00;
+      background-color: var(--lotus-yellow);
       border: none;
-      color: #102538;
+      color: var(--ink-dark);
       font-weight: bold;
       font-size: 15px;
       line-height: 1;
@@ -366,7 +423,7 @@
     }
 
     .cat-refresh-icon-btn:hover:not(:disabled) {
-      background-color: #f0b000;
+      background-color: var(--lotus-yellow-dark);
     }
 
     .cat-refresh-icon-btn:disabled {
@@ -375,7 +432,7 @@
     }
 
     .confirm-box-green {
-      background-color: #00a650;
+      background-color: var(--lotus-green);
       cursor: pointer;
       justify-content: center;
       border: none;
@@ -383,7 +440,7 @@
     }
 
     .confirm-box-green:hover {
-      background-color: #008741;
+      background-color: var(--lotus-green-dark);
     }
 
     .confirm-box-green span,
@@ -426,8 +483,8 @@
     }
 
     .category-section-header {
-      background-color: #ffbe00;
-      color: #102538;
+      background-color: var(--lotus-yellow);
+      color: var(--ink-dark);
       border: none;
       padding: 4px 8px;
       font-size: 12px;
@@ -611,8 +668,8 @@
     }
 
     .confirmed-status-box.has-qty {
-      background-color: #e8f8f0;
-      color: #006b33;
+      background-color: var(--lotus-green-soft);
+      color: var(--lotus-green-dark);
     }
 
     .status-text {
@@ -663,8 +720,8 @@
 
     .summary-title-box {
       border: none;
-      background-color: #ffbe00;
-      color: #102538;
+      background-color: var(--lotus-yellow);
+      color: var(--ink-dark);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -794,13 +851,13 @@
     }
 
     .history-record-row.selected {
-      background-color: #fff8db;
+      background-color: var(--lotus-yellow-soft);
     }
 
     .stamp-badge {
       display: inline-block;
-      background-color: #ffbe00;
-      color: #102538;
+      background-color: var(--lotus-yellow);
+      color: var(--ink-dark);
       border: none;
       padding: 2px 7px;
       font-size: 12px;
@@ -827,8 +884,8 @@
 
     .action-small-btn {
       border: none;
-      background-color: #ffbe00;
-      color: #102538;
+      background-color: var(--lotus-yellow);
+      color: var(--ink-dark);
       font-weight: bold;
       font-size: 13px;
       padding: 7px 14px;
@@ -843,17 +900,17 @@
     }
 
     .action-small-btn:hover {
-      background-color: #f0b000;
+      background-color: var(--lotus-yellow-dark);
     }
 
     .action-small-btn.save-green {
-      background-color: #00a650;
+      background-color: var(--lotus-green);
       color: #ffffff;
       border: none;
     }
 
     .action-small-btn.save-green:hover {
-      background-color: #008741;
+      background-color: var(--lotus-green-dark);
     }
 
     .action-small-btn.clear-red {
@@ -899,7 +956,7 @@
       width: 56px;
       height: 56px;
       border-radius: 50%;
-      background-color: #00a650;
+      background-color: var(--lotus-green);
       color: #ffffff;
       font-size: 32px;
       font-weight: bold;
@@ -916,7 +973,7 @@
     }
 
     .modal-btn {
-      background-color: #00a650;
+      background-color: var(--lotus-green);
       color: #ffffff;
       border: none;
       padding: 10px 18px;
@@ -927,7 +984,7 @@
     }
 
     .modal-btn:hover {
-      background-color: #008741;
+      background-color: var(--lotus-green-dark);
     }
 
     /* ================= Responsive สำหรับ Tablet & Mobile ================= */
@@ -1071,7 +1128,15 @@
 
       .login-screen {
         min-height: 0;
-        padding: 8px;
+        padding: 12px;
+      }
+
+      .login-card {
+        padding: 22px 18px 20px;
+      }
+
+      .login-brand {
+        font-size: 32px;
       }
 
       .catalog-box {
@@ -1196,25 +1261,37 @@
   <!-- ================= หน้า Log In ================= -->
   <div id="loginScreen" class="login-screen">
     <div class="login-card">
-      <div class="login-header-box">เข้าสู่ระบบสั่งซื้อสินค้า</div>
-      <div class="login-sub">กรอกรหัสลูกค้าเพื่อเข้าสู่หน้าสั่งซื้อ</div>
+      <div class="login-brand">
+        <span class="brand-orders">Orders</span>
+        <span class="brand-web">Web</span>
+      </div>
+      <div class="login-sub">Sign in to your account</div>
 
-      <div class="login-input-wrap">
-        <label for="loginCustId">รหัสลูกค้า :</label>
-        <input
-          type="text"
-          id="loginCustId"
-          placeholder="20000XXXXX"
-          autocomplete="off"
-          inputmode="text"
-          onkeydown="if(event.key==='Enter') handleLogin()"
-        >
+      <div class="login-field-group">
+        <label for="loginCustId">รหัสลูกค้า</label>
+        <div class="login-input-wrap">
+          <input
+            type="text"
+            id="loginCustId"
+            placeholder="20000XXXXX"
+            autocomplete="off"
+            inputmode="text"
+            onkeydown="if(event.key==='Enter') handleLogin()"
+          >
+        </div>
+      </div>
+
+      <div class="remember-row">
+        <label class="remember-label" for="rememberCustCheckbox">
+          <input type="checkbox" id="rememberCustCheckbox" checked>
+          <span>Remember me</span>
+        </label>
       </div>
 
       <div id="loginMessage" class="login-msg info">กำลังเตรียมข้อมูลลูกค้าจากชีท...</div>
 
       <button type="button" class="login-btn" id="loginSubmitBtn" onclick="handleLogin()">
-        เข้าสู่ระบบ
+        SIGN IN
       </button>
 
       <button type="button" class="login-secondary-btn" id="loginSyncBtn" onclick="syncCustomersFromSheet()">
@@ -1380,6 +1457,7 @@
 
   const CACHE_KEY = 'order_app_cache_v2';
   const SAVED_ORDERS_KEY = 'order_app_saved_orders_v1';
+  const REMEMBER_CUST_KEY = 'order_app_remembered_cust_v1';
   const CACHE_TTL_MS = 30 * 60 * 1000;
   const SELF_PICKUP_ADDRESS_TEXT = 'มารับสินค้าเองที่สาขา';
 
@@ -1409,21 +1487,44 @@
     });
   }
 
+  function restoreRememberedCustomer() {
+    try {
+      const raw = localStorage.getItem(REMEMBER_CUST_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      const inputEl = document.getElementById('loginCustId');
+      const cbEl = document.getElementById('rememberCustCheckbox');
+      if (parsed && parsed.enabled && parsed.custId) {
+        if (inputEl) inputEl.value = String(parsed.custId);
+        if (cbEl) cbEl.checked = true;
+      }
+    } catch (_) {}
+  }
+
+  function saveRememberedCustomer(custId, enabled) {
+    try {
+      if (enabled && custId) {
+        localStorage.setItem(REMEMBER_CUST_KEY, JSON.stringify({
+          enabled: true,
+          custId: String(custId).trim()
+        }));
+      } else {
+        localStorage.removeItem(REMEMBER_CUST_KEY);
+      }
+    } catch (_) {}
+  }
+
   window.addEventListener('DOMContentLoaded', () => {
     try {
+      restoreRememberedCustomer();
       setDefaultNextDay();
       updateRedFieldColors();
       updateSavedCountBadge();
       dataLoadedPromise = loadInitialDataWithCache().then(() => {
-        setLoginMessage(
-          customersData.length > 0
-            ? `พร้อมใช้งาน (พบข้อมูลลูกค้า ${customersData.length} รายการ)`
-            : 'พร้อมใช้งาน กรอกรหัสลูกค้าเพื่อเข้าสู่ระบบ',
-          'info'
-        );
+        setLoginMessage('เข้าสู่ระบบเพื่อสั่งสินค้า', 'info');
       });
       const loginInput = document.getElementById('loginCustId');
-      if (loginInput) loginInput.focus();
+      if (loginInput && !loginInput.value) loginInput.focus();
     } catch (err) {
       console.error('Init error:', err);
       setLoginMessage('เกิดข้อผิดพลาดในการเริ่มต้นระบบ: ' + err.message, 'error');
@@ -1693,7 +1794,7 @@
     ctx.lineWidth = 2;
     ctx.strokeRect(12, 12, width - 24, height - 24);
 
-    ctx.fillStyle = '#ffbe00';
+    ctx.fillStyle = '#f4c534';
     ctx.fillRect(24, 24, width - 48, 42);
     ctx.strokeRect(24, 24, width - 48, 42);
 
@@ -1750,7 +1851,7 @@
     });
 
     const footY = tableTop + 30 + Math.max(items.length, 1) * rowHeight + 10;
-    ctx.fillStyle = '#fff8db';
+    ctx.fillStyle = '#fdf7e2';
     ctx.fillRect(24, footY, width - 48, 38);
     ctx.strokeStyle = '#102538';
     ctx.lineWidth = 1.5;
@@ -1828,12 +1929,7 @@
     try {
       dataLoadedPromise = loadInitialDataWithCache({ skipCacheDisplay: true });
       await dataLoadedPromise;
-      setLoginMessage(
-        customersData.length > 0
-          ? `อัปเดตข้อมูลสำเร็จ (พบลูกค้า ${customersData.length} รายการ)`
-          : 'อัปเดตข้อมูลเสร็จแล้ว แต่ไม่พบรายชื่อลูกค้าในชีท',
-        'info'
-      );
+      setLoginMessage('เข้าสู่ระบบเพื่อสั่งสินค้า', 'info');
     } catch (err) {
       setLoginMessage('อัปเดตข้อมูลไม่สำเร็จ: ' + err.message, 'error');
     } finally {
@@ -1844,6 +1940,7 @@
 
   async function handleLogin() {
     const inputEl = document.getElementById('loginCustId');
+    const rememberCb = document.getElementById('rememberCustCheckbox');
     const loginBtn = document.getElementById('loginSubmitBtn');
     const enteredId = (inputEl?.value || '').trim();
 
@@ -1869,6 +1966,12 @@
       return;
     }
 
+    const canonicalId = String(
+      foundCustomer.id ?? foundCustomer.custId ?? foundCustomer.code ?? foundCustomer.customerId ?? enteredId
+    ).trim();
+
+    saveRememberedCustomer(canonicalId, Boolean(rememberCb && rememberCb.checked));
+
     setLoginMessage('', 'info');
     setValidationNote('', 'orderValidationNote');
     setValidationNote('', 'summaryValidationNote');
@@ -1882,10 +1985,6 @@
     const custNameEl = document.getElementById('custName');
     const addrEl = document.getElementById('address');
     const deliveryTypeVal = (document.getElementById('deliveryType')?.value || '').trim();
-
-    const canonicalId = String(
-      foundCustomer.id ?? foundCustomer.custId ?? foundCustomer.code ?? foundCustomer.customerId ?? enteredId
-    ).trim();
 
     activeLoggedInCustId = canonicalId;
     if (custIdEl) {
@@ -1921,12 +2020,12 @@
     document.getElementById('loginScreen').style.display = 'flex';
     window.scrollTo(0, 0);
 
+    restoreRememberedCustomer();
     const loginInput = document.getElementById('loginCustId');
     if (loginInput) {
-      loginInput.value = '';
-      loginInput.focus();
+      if (!loginInput.value) loginInput.focus();
     }
-    setLoginMessage('กรอกรหัสลูกค้าเพื่อเข้าสู่ระบบ', 'info');
+    setLoginMessage('เข้าสู่ระบบเพื่อสั่งสินค้า', 'info');
   }
 
   function handleCustIdInput() {
