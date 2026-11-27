@@ -443,6 +443,7 @@
       gap: 6px;
       overflow-x: auto;
       overflow-y: hidden;
+      overscroll-behavior-x: contain;
       padding-bottom: 4px;
       -webkit-overflow-scrolling: touch;
     }
@@ -582,6 +583,7 @@
       font-weight: bold;
       outline: none;
       padding: 0 2px;
+      scroll-margin: 24px;
       touch-action: manipulation;
       -moz-appearance: textfield;
     }
@@ -2122,9 +2124,9 @@
         </div>
         <div class="card-name-box">${item.name || ''}</div>
         <div class="card-action-row">
-          <button type="button" class="qty-btn" onclick="changeQty('${item.code}', -1)">-</button>
-          <input type="text" inputmode="numeric" pattern="[0-9]*" class="qty-input" id="qty_${item.code}" value="${inputQty}" oninput="handleQtyInput('${item.code}')" onblur="formatQtyOnBlur('${item.code}')">
-          <button type="button" class="qty-btn" onclick="changeQty('${item.code}', 1)">+</button>
+          <button type="button" class="qty-btn" onmousedown="event.preventDefault()" onclick="changeQty('${item.code}', -1)">-</button>
+          <input type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" class="qty-input" id="qty_${item.code}" value="${inputQty}" oninput="handleQtyInput('${item.code}')" onblur="formatQtyOnBlur('${item.code}')">
+          <button type="button" class="qty-btn" onmousedown="event.preventDefault()" onclick="changeQty('${item.code}', 1)">+</button>
           <div class="confirmed-status-box ${confirmedQty > 0 ? 'has-qty' : ''}" id="status_${item.code}">
             ${formatOrderedStatus(confirmedQty, unit)}
           </div>
@@ -2196,11 +2198,13 @@
 
     const statusBox = document.getElementById(`status_${code}`);
     if (statusBox) {
-      statusBox.textContent = formatOrderedStatus(safeQty, unit);
+      const nextText = formatOrderedStatus(safeQty, unit);
+      if (statusBox.textContent !== nextText) {
+        statusBox.textContent = nextText;
+      }
       statusBox.classList.toggle('has-qty', safeQty > 0);
     }
 
-    setValidationNote('', 'orderValidationNote');
     calculateTotal();
   }
 
@@ -2218,7 +2222,10 @@
     const digitsOnly = String(input.value || '').replace(/[^0-9]/g, '');
     const parsed = digitsOnly === '' ? 0 : parseInt(digitsOnly, 10);
     const safeQty = Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
-    input.value = safeQty > 0 ? String(safeQty) : '';
+    const formatted = safeQty > 0 ? String(safeQty) : '';
+    if (input.value !== formatted) {
+      input.value = formatted;
+    }
     syncCardCartAndTotal(code, safeQty);
   }
 
@@ -2257,7 +2264,10 @@
     const total = items.reduce((sum, item) => sum + item.subtotal, 0);
     const totalEl = document.getElementById('totalAmount');
     if (totalEl) {
-      totalEl.value = formatMoney2(total);
+      const nextVal = formatMoney2(total);
+      if (totalEl.value !== nextVal) {
+        totalEl.value = nextVal;
+      }
     }
   }
 
