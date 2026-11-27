@@ -193,17 +193,17 @@
 
     .top-bar {
       display: grid;
-      grid-template-columns: 2fr 2fr;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
       margin-bottom: 10px;
       flex-shrink: 0;
     }
 
-    .date-time-row {
-      grid-column: 1 / -1;
+    .summary-date-time-row {
       display: grid;
       grid-template-columns: 1.4fr 1fr;
       gap: 10px;
+      margin-bottom: 8px;
     }
 
     .section-box {
@@ -674,7 +674,7 @@
     }
 
     .summary-title-box {
-      border: 1.5px solid #102538;
+      border: none;
       background-color: #ffbe00;
       color: #102538;
       display: flex;
@@ -699,13 +699,7 @@
       overflow-y: auto;
     }
 
-    .summary-info-top {
-      display: grid;
-      grid-template-columns: 2.2fr 1.3fr 1fr;
-      gap: 8px;
-    }
-
-    .summary-info-box, .summary-sub-box {
+    .summary-customer-box {
       border: 1.5px solid #2c3e50;
       background-color: #ffffff;
       padding: 8px 10px;
@@ -717,8 +711,10 @@
       word-break: break-word;
     }
 
-    .summary-sub-box {
-      font-weight: normal;
+    .summary-delivery-card {
+      border: 2px solid #2c3e50;
+      background-color: #ffffff;
+      padding: 10px 12px;
     }
 
     .summary-action-bar {
@@ -952,7 +948,6 @@
       .product-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
-      .summary-info-top,
       .summary-action-bar {
         grid-template-columns: 1fr;
       }
@@ -988,15 +983,14 @@
         flex-shrink: 0;
       }
 
-      .date-time-row {
+      .summary-date-time-row {
         grid-template-columns: 1.15fr 1fr;
         gap: 4px;
+        margin-bottom: 4px;
       }
 
-      .section-box {
+      .summary-delivery-card {
         padding: 5px 6px;
-        margin-bottom: 5px;
-        flex-shrink: 0;
       }
 
       .delivery-row-1 {
@@ -1104,66 +1098,66 @@
         min-height: 0;
         overflow-y: auto;
         overflow-x: hidden;
-        padding: 5px;
+        padding: 6px;
       }
 
       .category-sections-wrap {
-        gap: 8px;
+        gap: 10px;
       }
 
       .category-section-header {
         border: none;
-        font-size: 11px;
-        padding: 3px 6px;
+        font-size: 12px;
+        padding: 4px 8px;
       }
 
       .category-horizontal-row {
-        gap: 5px;
-        padding-bottom: 4px;
+        gap: 8px;
+        padding-bottom: 6px;
       }
 
       .category-horizontal-row .product-card {
-        flex: 0 0 98px;
-        width: 98px;
+        flex: 0 0 142px;
+        width: 142px;
       }
 
       .product-card {
         min-height: auto;
-        padding: 4px;
-        gap: 3px;
+        padding: 6px;
+        gap: 5px;
       }
 
       .card-img-box {
         border: none;
-        height: 76px;
+        height: 118px;
       }
 
       .price-tag {
-        font-size: 8.5px;
-        padding: 1px 3px;
+        font-size: 10px;
+        padding: 1px 5px;
       }
 
       .code-barcode-text,
       .unit-badge {
-        font-size: 8px;
+        font-size: 9.5px;
       }
 
       .card-name-box {
-        font-size: 9.5px;
-        min-height: 26px;
-        padding: 2px;
+        font-size: 11px;
+        min-height: 36px;
+        padding: 4px;
       }
 
       .card-action-row {
-        grid-template-columns: 22px 1fr 22px;
-        grid-template-rows: 24px 22px;
-        gap: 2px;
+        grid-template-columns: 28px 1fr 28px;
+        grid-template-rows: 28px 26px;
+        gap: 3px;
         min-height: auto;
       }
 
       .qty-btn {
-        min-height: 24px;
-        font-size: 13px;
+        min-height: 28px;
+        font-size: 15px;
         font-weight: bold;
       }
 
@@ -1175,8 +1169,8 @@
       .qty-input {
         grid-column: 2 / 3;
         grid-row: 1 / 2;
-        font-size: 11px;
-        min-height: 24px;
+        font-size: 12.5px;
+        min-height: 28px;
       }
 
       .qty-btn:last-of-type {
@@ -1187,15 +1181,15 @@
       .card-confirm-btn {
         grid-column: 1 / 2;
         grid-row: 2 / 3;
-        min-height: 22px;
-        min-width: 22px;
+        min-height: 26px;
+        min-width: 28px;
       }
 
       .confirmed-status-box {
         grid-column: 2 / 4;
         grid-row: 2 / 3;
-        font-size: 8.5px;
-        min-height: 22px;
+        font-size: 10px;
+        min-height: 26px;
       }
 
       .summary-panel,
@@ -1267,44 +1261,6 @@
         <label for="custName">ชื่อ :</label>
         <input type="text" id="custName" class="cust-locked-input" readonly tabindex="-1">
       </div>
-      <div class="date-time-row">
-        <div class="field-box">
-          <label for="pickupDate">วันรับสินค้า :</label>
-          <input type="date" id="pickupDate" onchange="enforceNextDayDate(); updateRedFieldColors();">
-        </div>
-        <div class="field-box" id="pickupTimeBox">
-          <label for="pickupTime">เวลารับ :</label>
-          <select id="pickupTime" onchange="clearMissingHighlight('pickupTime', 'pickupTimeBox'); updateRedFieldColors();">
-            <option value="">เลือกเวลา</option>
-            <option value="10:00-14:00น.">10:00-14:00น.</option>
-            <option value="14:00-17:00น.">14:00-17:00น.</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="section-box">
-      <div class="delivery-row-1">
-        <div class="field-box" id="addressBox">
-          <label for="address">ที่อยู่จัดส่ง :</label>
-          <input type="text" id="address" placeholder="พิมพ์ที่อยู่จัดส่ง" oninput="clearMissingHighlight('address', 'addressBox'); updateRedFieldColors();">
-        </div>
-        <div class="field-box" id="deliveryTypeBox">
-          <label for="deliveryType">ประเภทการจัดส่ง :</label>
-          <select id="deliveryType" onchange="handleDeliveryTypeChange()">
-            <option value="">เลือกประเภท</option>
-            <option value="จัดส่ง">จัดส่ง</option>
-            <option value="รับเอง">รับเอง</option>
-          </select>
-        </div>
-      </div>
-      <div class="delivery-row-2">
-        <div class="field-box">
-          <label for="remark">หมายเหตุ :</label>
-          <input type="text" id="remark" placeholder="ระบุเพิ่มเติม (ถ้ามี)" oninput="updateRedFieldColors()">
-        </div>
-      </div>
-      <div id="orderValidationNote" class="inline-validation-note"></div>
     </div>
 
     <div class="section-box catalog-box">
@@ -1330,6 +1286,8 @@
         </div>
       </div>
 
+      <div id="orderValidationNote" class="inline-validation-note"></div>
+
       <div class="product-wrapper">
         <div class="product-grid" id="productGrid">
           <div class="status-text">กำลังโหลดข้อมูลสินค้าจาก Google Sheet...</div>
@@ -1346,13 +1304,48 @@
     </div>
 
     <div class="summary-panel">
-      <div class="summary-info-top">
-        <div class="summary-info-box" id="sumCustomerInfo">-</div>
-        <div class="summary-info-box" id="sumDateTimeInfo">-</div>
-        <div class="summary-info-box" id="sumDeliveryType">-</div>
+      <div class="summary-customer-box" id="sumCustomerInfo">-</div>
+
+      <div class="summary-delivery-card">
+        <div class="summary-date-time-row">
+          <div class="field-box">
+            <label for="pickupDate">วันรับสินค้า :</label>
+            <input type="date" id="pickupDate" onchange="enforceNextDayDate(); updateRedFieldColors();">
+          </div>
+          <div class="field-box" id="pickupTimeBox">
+            <label for="pickupTime">เวลารับ :</label>
+            <select id="pickupTime" onchange="clearMissingHighlight('pickupTime', 'pickupTimeBox'); updateRedFieldColors();">
+              <option value="">เลือกเวลา</option>
+              <option value="10:00-14:00น.">10:00-14:00น.</option>
+              <option value="14:00-17:00น.">14:00-17:00น.</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="delivery-row-1">
+          <div class="field-box" id="addressBox">
+            <label for="address">ที่อยู่จัดส่ง :</label>
+            <input type="text" id="address" placeholder="พิมพ์ที่อยู่จัดส่ง" oninput="clearMissingHighlight('address', 'addressBox'); updateRedFieldColors();">
+          </div>
+          <div class="field-box" id="deliveryTypeBox">
+            <label for="deliveryType">ประเภทการจัดส่ง :</label>
+            <select id="deliveryType" onchange="handleDeliveryTypeChange()">
+              <option value="">เลือกประเภท</option>
+              <option value="จัดส่ง">จัดส่ง</option>
+              <option value="รับเอง">รับเอง</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="delivery-row-2">
+          <div class="field-box">
+            <label for="remark">หมายเหตุ :</label>
+            <input type="text" id="remark" placeholder="ระบุเพิ่มเติม (ถ้ามี)" oninput="updateRedFieldColors()">
+          </div>
+        </div>
       </div>
 
-      <div class="summary-sub-box" id="sumAddressRemark">-</div>
+      <div id="summaryValidationNote" class="inline-validation-note"></div>
 
       <div class="summary-action-bar">
         <div class="summary-total-box" id="sumCountTotal">จำนวนสินค้าทั้งหมด 0 ชิ้น | 0 รายการ</div>
@@ -1486,8 +1479,8 @@
     });
   }
 
-  function setValidationNote(msg = '') {
-    const noteEl = document.getElementById('orderValidationNote');
+  function setValidationNote(msg = '', targetId = 'orderValidationNote') {
+    const noteEl = document.getElementById(targetId);
     if (!noteEl) return;
     if (msg) {
       noteEl.textContent = msg;
@@ -1498,7 +1491,7 @@
     }
   }
 
-  function validateRequiredOrderFields() {
+  function validateRequiredOrderFields(targetNoteId = 'summaryValidationNote') {
     const addressVal = (document.getElementById('address')?.value || '').trim();
     const pickupTimeVal = (document.getElementById('pickupTime')?.value || '').trim();
     const deliveryTypeVal = (document.getElementById('deliveryType')?.value || '').trim();
@@ -1517,7 +1510,7 @@
     if (!deliveryTypeVal) missing.push('ประเภทการจัดส่ง');
 
     if (missing.length > 0) {
-      setValidationNote(`กรุณากรอกข้อมูลให้ครบ: ${missing.join(' / ')}`);
+      setValidationNote(`กรุณากรอกข้อมูลให้ครบ: ${missing.join(' / ')}`, targetNoteId);
       if (!addressVal) {
         document.getElementById('address')?.focus();
       } else if (!pickupTimeVal) {
@@ -1528,7 +1521,7 @@
       return false;
     }
 
-    setValidationNote('');
+    setValidationNote('', targetNoteId);
     return true;
   }
 
@@ -1543,7 +1536,8 @@
     const pickupTimeVal = (document.getElementById('pickupTime')?.value || '').trim();
     const deliveryTypeVal = (document.getElementById('deliveryType')?.value || '').trim();
     if (addressVal && pickupTimeVal && deliveryTypeVal) {
-      setValidationNote('');
+      setValidationNote('', 'summaryValidationNote');
+      setValidationNote('', 'orderValidationNote');
     }
   }
 
@@ -1891,7 +1885,8 @@
     }
 
     setLoginMessage('', 'info');
-    setValidationNote('');
+    setValidationNote('', 'orderValidationNote');
+    setValidationNote('', 'summaryValidationNote');
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('summaryScreen').classList.remove('active');
     document.getElementById('historyScreen').classList.remove('active');
@@ -1933,7 +1928,8 @@
 
   function logoutToLogin() {
     activeLoggedInCustId = '';
-    setValidationNote('');
+    setValidationNote('', 'orderValidationNote');
+    setValidationNote('', 'summaryValidationNote');
     document.getElementById('summaryScreen').classList.remove('active');
     document.getElementById('historyScreen').classList.remove('active');
     document.getElementById('orderScreen').style.display = 'none';
@@ -2107,7 +2103,7 @@
     const currentVal = select.value;
     const categories = [...new Set(productsData.map(p => p.category).filter(Boolean))];
 
-    select.innerHTML = `<option value="">หมวดหมู่</option>` +
+    select.innerHTML = `<option value="">หมวดหมู่ (ทั้งหมด)</option>` +
       categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
     select.value = currentVal;
   }
@@ -2309,33 +2305,25 @@
   }
 
   function openSummaryScreen() {
-    if (!validateRequiredOrderFields()) {
-      return;
-    }
-
     const items = getSelectedItems();
     if (items.length === 0) {
-      setValidationNote('กรุณากดยืนยันจำนวนสินค้าอย่างน้อย 1 รายการ');
+      setValidationNote('กรุณากดยืนยันจำนวนสินค้าอย่างน้อย 1 รายการ', 'orderValidationNote');
       document.getElementById('orderValidationNote')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
 
-    setValidationNote('');
+    setValidationNote('', 'orderValidationNote');
+    setValidationNote('', 'summaryValidationNote');
+    setDefaultNextDay();
+    updateRedFieldColors();
+
     const custId = document.getElementById('custId')?.value.trim() || '-';
     const custName = document.getElementById('custName')?.value.trim() || '-';
-    const pickupDate = document.getElementById('pickupDate')?.value || '-';
-    const pickupTime = document.getElementById('pickupTime')?.value || '-';
-    const deliveryType = document.getElementById('deliveryType')?.value || '-';
-    const address = document.getElementById('address')?.value.trim() || '-';
-    const remark = document.getElementById('remark')?.value.trim() || '-';
 
     const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
     const totalMoney = items.reduce((sum, item) => sum + item.subtotal, 0);
 
-    document.getElementById('sumCustomerInfo').textContent = `${custId} | ${custName}`;
-    document.getElementById('sumDateTimeInfo').textContent = `${pickupTime} (${pickupDate})`;
-    document.getElementById('sumDeliveryType').textContent = deliveryType;
-    document.getElementById('sumAddressRemark').textContent = `ที่อยู่จัดส่ง : ${address} | หมายเหตุ : ${remark}`;
+    document.getElementById('sumCustomerInfo').textContent = `รหัสลูกค้า : ${custId}  |  ชื่อ : ${custName}`;
     document.getElementById('sumCountTotal').textContent = `จำนวนสินค้าทั้งหมด ${totalQty} ชิ้น | ${items.length} รายการ`;
     document.getElementById('sumMoneyTotal').textContent = `Total : ${formatMoney2(totalMoney)}`;
 
@@ -2360,7 +2348,7 @@
   }
 
   async function submitOrderToSheet() {
-    if (!validateRequiredOrderFields()) {
+    if (!validateRequiredOrderFields('summaryValidationNote')) {
       return;
     }
 
@@ -2414,7 +2402,8 @@
     window.scrollTo(0, 0);
 
     cartQuantities = {};
-    setValidationNote('');
+    setValidationNote('', 'orderValidationNote');
+    setValidationNote('', 'summaryValidationNote');
     ['address', 'remark', 'searchProduct'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
