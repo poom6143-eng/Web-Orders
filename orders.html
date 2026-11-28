@@ -387,7 +387,7 @@
     <section id="orderListView" class="card">
       <div class="card-header">
         <span>รายการออร์เดอร์ที่ลูกค้าสั่งเข้ามา</span>
-        <span style="font-size:12px;color:var(--text-muted);">กด View เพื่อเปิดหน้าออร์เดอร์และสแกน</span>
+        <span id="orderSourceStatus" style="font-size:12px;color:var(--text-muted);">กำลังเชื่อมข้อมูลออร์เดอร์...</span>
       </div>
       <div id="orderListEl" class="order-list"></div>
     </section>
@@ -427,8 +427,8 @@
   </div>
 
   <script>
-    const SHEET_WEB_APP_URL = 'วางลิงก์_WEB_APP_ของ_APPS_SCRIPT_ตรงนี้';
-    const STORAGE_KEYS = ['savedOrdersHistory', 'orderHistory', 'ordersData', 'webOrdersQueue'];
+    const SHEET_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxV-OU3V0eHblsXYXzFPgjIaVnI7JpHplmROFrmpgY_fRNUt-KYFPNHFt21nv9za1vH/exec';
+    const STORAGE_KEYS = ['order_app_saved_orders_v1', 'savedOrdersHistory', 'orderHistory', 'ordersData', 'webOrdersQueue'];
     const INTAKE_KEY = 'intakeReceivedOrders_v2';
 
     let orders = [];
@@ -440,9 +440,25 @@
     let lastScannedCode = '';
     let lastScannedAt = 0;
 
+    function setSourceStatus(text) {
+      const el = document.getElementById('orderSourceStatus');
+      if (el) el.textContent = text;
+    }
+
     function formatMoney2(num) {
       const n = Number(num) || 0;
       return n.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function parseItemsArray(raw) {
+      if (Array.isArray(raw.items)) return raw.items;
+      if (typeof raw.itemsJson === 'string' && raw.itemsJson.trim()) {
+        try {
+          const parsed = JSON.parse(raw.itemsJson);
+          if (Array.isArray(parsed)) return parsed;
+        } catch (e) {}
+      }
+      return [];
     }
 
     function normalizeItem(it, idx) {
@@ -454,24 +470,24 @@
         barcode,
         qty: Number(it.qty || it.quantity || 1),
         price: Number(it.price || it.unitPrice || 0),
-        scanned: Boolean(it.scanned)
+        scanned: Boolean(it.scanned || (Number(it.scannedQty) > 0))
       };
     }
 
     function normalizeOrder(raw, idx) {
-      const rawItems = Array.isArray(raw.items) ? raw.items : [];
+      const rawItems = parseItemsArray(raw);
       const items = rawItems.map((it, i) => normalizeItem(it, i));
       const computedTotal = items.reduce((sum, it) => sum + (it.qty * it.price), 0);
       const totalAmount = Number(String(raw.totalAmount ?? raw.total ?? computedTotal).replace(/[^0-9.-]+/g, '')) || computedTotal;
 
       return {
-        id: raw.id || `ORD-${Date.now()}-${idx}`,
+        id: raw.orderId || raw.id || `ORD-${Date.now()}-${idx}`,
         orderDate: raw.orderDate || raw.date || new Date().toLocaleDateString('en-GB'),
         orderTime: raw.orderTime || raw.time || new Date().toLocaleTimeString('en-GB'),
         customer: raw.customer || raw.customerName || 'ลูกค้าทั่วไป',
         delivery: raw.delivery || raw.deliveryInfo || 'รับเอง',
         address: raw.address || '-',
-        note: raw.note || '-',
+        note: raw.note || raw.remark || '-',
         status: raw.status || 'รอรับออร์เดอร์',
         totalAmount,
         items
@@ -482,11 +498,14 @@
       const params = new URLSearchParams(window.location.search);
       const targetOrderId = params.get('orderId') || params.get('order') || '';
 
-      if (SHEET_WEB_APP_URL && !SHEET_WEB_APP_URL.includes('วางลิงก์_WEB_APP')) {
+      if (SHEET_WEB_APP_URL) {
         try {
+          const baseUrl = SHEET_WEB_APP_URL.includes('?')
+            ? `${SHEET_WEB_APP_URL}&action=getOrders&t=${Date.now()}`
+            : `${SHEET_WEB_APP_URL}?action=getOrders&t=${Date.now()}`;
           const url = targetOrderId
-            ? `${SHEET_WEB_APP_URL}?orderId=${encodeURIComponent(targetOrderId)}`
-            : SHEET_WEB_APP_URL;
+            ? `${baseUrl}&orderId=${encodeURIComponent(targetOrderId)}`
+            : baseUrl;
           const res = await fetch(url);
           const data = await res.json();
           const list = Array.isArray(data.orders) ? data.orders : (Array.isArray(data) ? data : []);
@@ -496,14 +515,17 @@
               ? Math.max(0, orders.findIndex(o => String(o.id) === String(targetOrderId)))
               : 0;
             saveOrders();
+            setSourceStatus(`เชื่อมชีต DATA Orders แล้ว (${orders.length} ออร์เดอร์)`);
             renderOrderList();
             if (targetOrderId && orders[activeOrderIndex]) {
               openOrderDetail(activeOrderIndex);
             }
             return;
           }
+          setSourceStatus('เชื่อมชีต DATA Orders แล้ว (ยังไม่มีออร์เดอร์ในชีต)');
         } catch (err) {
           console.warn('ดึงข้อมูลจากชีทไม่สำเร็จ ใช้ข้อมูลในเครื่องแทน:', err);
+          setSourceStatus('ดึงจากชีตไม่ได้ชั่วคราว ใช้ข้อมูลในเครื่องแทน');
         }
       }
 
@@ -521,42 +543,12 @@
         } catch (e) {}
       }
 
-      if (found.length === 0) {
-        found = [
-          normalizeOrder({
-            id: 'SAMPLE-001',
-            orderDate: '27/11/2026',
-            orderTime: '22:46:41',
-            customer: 'ลูกค้า : 1 | 1',
-            delivery: '14:00-17:00น. (2026-11-28) | รับเอง',
-            address: 'มารับสินค้าเองที่สาขา',
-            note: '-',
-            status: 'รอรับออร์เดอร์',
-            items: [
-              {
-                name: 'S_ทิพรสน้ำปลา ขวดเพทรุ้ง 700ซีซี.',
-                code: '000049301',
-                barcode: '8850123456789',
-                qty: 4,
-                price: 30,
-                scanned: false
-              },
-              {
-                name: 'น้ำมันพืช 1 ลิตร',
-                code: '000049302',
-                barcode: '8859876543210',
-                qty: 2,
-                price: 55,
-                scanned: false
-              }
-            ]
-          }, 0)
-        ];
-      }
-
       orders = found;
       activeOrderIndex = 0;
       saveOrders();
+      if (orders.length > 0) {
+        setSourceStatus(`โหลดออร์เดอร์จากเครื่อง (${orders.length} ออร์เดอร์)`);
+      }
       renderOrderList();
     }
 
@@ -572,7 +564,7 @@
       badgeEl.textContent = String(orders.length);
 
       if (!orders.length) {
-        listEl.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">ยังไม่มีออร์เดอร์ที่เข้ามา</p>';
+        listEl.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">ยังไม่มีออร์เดอร์ที่เข้ามา กด "ดึงออร์เดอร์" เพื่อรีเฟรชจากชีต</p>';
         return;
       }
 
@@ -642,7 +634,7 @@
       saveOrders();
       renderOrderDetail();
 
-      if (SHEET_WEB_APP_URL && !SHEET_WEB_APP_URL.includes('วางลิงก์_WEB_APP')) {
+      if (SHEET_WEB_APP_URL) {
         try {
           await fetch(SHEET_WEB_APP_URL, {
             method: 'POST',
