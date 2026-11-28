@@ -6,7 +6,7 @@
   <title>รับออร์เดอร์สินค้า | Order Intake</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700;800&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --lotus-yellow: #f4c430;
@@ -38,7 +38,7 @@
       background-color: var(--lotus-yellow);
       padding: 10px 14px;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       gap: 10px;
       border-bottom: 2px solid var(--lotus-yellow-dark);
@@ -46,6 +46,36 @@
       top: 0;
       z-index: 20;
       flex-wrap: wrap;
+    }
+
+    .nav-order-stack {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .orders-under-btn-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 0.95;
+      font-family: 'Prompt', 'Sarabun', sans-serif;
+      font-weight: 800;
+      user-select: none;
+    }
+
+    .orders-under-btn-logo .orders-word {
+      color: var(--lotus-yellow, #f4c430);
+      font-size: 13px;
+      letter-spacing: -0.2px;
+      text-shadow: 0 1px 1px rgba(16, 37, 56, 0.25);
+    }
+
+    .orders-under-btn-logo .web-word {
+      color: var(--lotus-green, #2a8c72);
+      font-size: 13px;
+      letter-spacing: -0.2px;
     }
 
     .top-title {
@@ -172,11 +202,11 @@
 
     .stamp-badge {
       background: var(--lotus-yellow);
-      color: var(--lotus-navy);
+      color: #ffffff;
       font-size: 12px;
       font-weight: 700;
       padding: 2px 8px;
-      border-radius: 4px;
+      border-radius: 6px;
     }
 
     .order-sub {
@@ -193,7 +223,7 @@
       font-size: 12px;
       font-weight: 700;
       padding: 1px 7px;
-      border-radius: 4px;
+      border-radius: 6px;
       background: #e9ecef;
       color: var(--lotus-navy);
     }
@@ -335,7 +365,13 @@
 <body>
   <header class="top-bar">
     <div class="action-row">
-      <a href="./index.html" class="action-small-btn btn-nav">&lt; หน้าสั่งสินค้า</a>
+      <div class="nav-order-stack">
+        <a href="./index.html" class="action-small-btn btn-nav">&lt; หน้าสั่งสินค้า</a>
+        <div class="orders-under-btn-logo" aria-label="Orders Web">
+          <span class="orders-word">Orders</span>
+          <span class="web-word">Web</span>
+        </div>
+      </div>
       <span class="top-title">
         รับออร์เดอร์สินค้า
         <span id="orderCountBadge" class="badge-count">0</span>
@@ -391,6 +427,7 @@
   </div>
 
   <script>
+    const SHEET_WEB_APP_URL = 'วางลิงก์_WEB_APP_ของ_APPS_SCRIPT_ตรงนี้';
     const STORAGE_KEYS = ['savedOrdersHistory', 'orderHistory', 'ordersData', 'webOrdersQueue'];
     const INTAKE_KEY = 'intakeReceivedOrders_v2';
 
@@ -441,7 +478,35 @@
       };
     }
 
-    function syncFromLocalStorage() {
+    async function syncFromLocalStorage() {
+      const params = new URLSearchParams(window.location.search);
+      const targetOrderId = params.get('orderId') || params.get('order') || '';
+
+      if (SHEET_WEB_APP_URL && !SHEET_WEB_APP_URL.includes('วางลิงก์_WEB_APP')) {
+        try {
+          const url = targetOrderId
+            ? `${SHEET_WEB_APP_URL}?orderId=${encodeURIComponent(targetOrderId)}`
+            : SHEET_WEB_APP_URL;
+          const res = await fetch(url);
+          const data = await res.json();
+          const list = Array.isArray(data.orders) ? data.orders : (Array.isArray(data) ? data : []);
+          if (list.length > 0) {
+            orders = list.map((r, i) => normalizeOrder(r, i));
+            activeOrderIndex = targetOrderId
+              ? Math.max(0, orders.findIndex(o => String(o.id) === String(targetOrderId)))
+              : 0;
+            saveOrders();
+            renderOrderList();
+            if (targetOrderId && orders[activeOrderIndex]) {
+              openOrderDetail(activeOrderIndex);
+            }
+            return;
+          }
+        } catch (err) {
+          console.warn('ดึงข้อมูลจากชีทไม่สำเร็จ ใช้ข้อมูลในเครื่องแทน:', err);
+        }
+      }
+
       let found = [];
       for (const key of STORAGE_KEYS) {
         try {
@@ -469,7 +534,7 @@
             status: 'รอรับออร์เดอร์',
             items: [
               {
-                name: 'S_ทิพรสน้ำปลา ขวดเพชรุ้ง 700ซีซี.',
+                name: 'S_ทิพรสน้ำปลา ขวดเพทรุ้ง 700ซีซี.',
                 code: '000049301',
                 barcode: '8850123456789',
                 qty: 4,
@@ -570,11 +635,29 @@
       `).join('');
     }
 
-    function markSelectedReceived() {
-      if (!orders[activeOrderIndex]) return;
-      orders[activeOrderIndex].status = 'รับออร์เดอร์แล้ว';
+    async function markSelectedReceived() {
+      const rec = orders[activeOrderIndex];
+      if (!rec) return;
+      rec.status = 'รับออร์เดอร์แล้ว';
       saveOrders();
       renderOrderDetail();
+
+      if (SHEET_WEB_APP_URL && !SHEET_WEB_APP_URL.includes('วางลิงก์_WEB_APP')) {
+        try {
+          await fetch(SHEET_WEB_APP_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+              action: 'updateOrder',
+              orderId: rec.id,
+              status: rec.status,
+              items: rec.items
+            })
+          });
+        } catch (err) {
+          console.warn('อัปเดตสถานะลงชีทไม่สำเร็จ:', err);
+        }
+      }
     }
 
     function clearReceivedOrders() {
@@ -695,17 +778,6 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      try {
-        const saved = localStorage.getItem(INTAKE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length) {
-            orders = parsed.map((r, i) => normalizeOrder(r, i));
-            renderOrderList();
-            return;
-          }
-        }
-      } catch (e) {}
       syncFromLocalStorage();
     });
   </script>
