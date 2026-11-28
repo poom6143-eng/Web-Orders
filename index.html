@@ -500,15 +500,15 @@
 
    .confirm-box-green {
       background-color: var(--lotus-green);
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
       justify-content: center;
       border: none;
-      min-height: 38px;
-    }
-
-    .confirm-box-green:hover {
-      background-color: var(--lotus-green-dark);
+      height: 30px;
+      min-height: 30px;
+      padding: 0 12px;
+      display: inline-flex;
+      align-items: center;
     }
 
     .confirm-box-green span,
@@ -516,12 +516,12 @@
       font-family: 'Prompt', 'Sarabun', sans-serif;
       color: #ffffff;
       font-weight: bold;
-      font-size: 15px;
+      font-size: 12px;
+      line-height: 1;
       background: transparent;
       border: none;
       cursor: pointer;
     }
-
     .product-wrapper {
       border: none;
       padding: 8px;
@@ -932,8 +932,9 @@
       font-family: 'Prompt', 'Sarabun', sans-serif;
       display: inline-block;
       background-color: var(--lotus-yellow);
-      color: var(--ink-dark);
+      color: #ffffff;
       border: none;
+      border-radius: 6px;
       padding: 2px 7px;
       font-size: 12px;
       font-weight: bold;
@@ -1203,25 +1204,21 @@
         font-size: 12px;
       }
       .confirm-box-green {
-        min-height: 32px;
+        border-radius: 5px;
+        height: 24px;
+        min-height: 24px;
+        padding: 0 10px;
       }
 
-      confirm-box-green {
-        border-radius: 6px;
-        min-height: 32px;
+      .confirm-box-green span,
+      .confirm-box-green button {
+        font-size: 10.5px;
       }
 
-      .summary-header-bar {
-        grid-template-columns: 110px 1fr;
-        gap: 6px;
-        margin-bottom: 6px;
-      }
-
-      .back-btn,
-      .summary-title-box {
-        min-height: 32px;
-        font-size: 12.5px;
-        padding: 4px 6px;
+      .inline-validation-note {
+        font-size: 10px;
+        margin-top: 3px;
+        color: #d92d20 !important;
       }
 
       .login-screen {
@@ -1524,7 +1521,7 @@
   <!-- ================= หน้า ประวัติคำสั่งซื้อ ================= -->
   <div id="historyScreen" class="history-screen">
     <div class="summary-header-bar">
-      <button type="button" class="back-btn" onclick="closeSavedHistoryScreen()">&lt; กลับไปหน้าสั่งซื้อ</button>
+      <button type="button" class="back-btn" onclick="closeSavedHistoryScreen()">&lt; หน้าสั่งซื้อ</button>
       <div class="summary-title-box" id="historyScreenTitle">ประวัติคำสั่งซื้อ</div>
     </div>
 
